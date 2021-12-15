@@ -36,39 +36,7 @@ function print_select_criterium($selected_id = null)
 	$query = "SELECT id, naam FROM criterium";	
 	print "<!-- $query -->\n";
 ?>
-		<select name="criterium">
-		<option value="-1" disabled selected>Kies een criterium</option>
-<?php
-	// Send the query to the database server.
-	$stmt = $database->query($query, PDO::FETCH_ASSOC);
-	// Loop through all the records.
-	foreach ($stmt as $record) 	
-	{
-		$id = $record["id"];
-		$value = $record["naam"];
-		
-		// Check if this option should be pre-selected.
-		$selected_yn="";
-		if ($id==$selected_id) {
-			$selected_yn = "selected";
-		}
-		
-		// Generate an option for each item in the table.
-?>
-		<option value="<?=$id?>" <?=$selected_yn?>><?=$value?></option>
-<?php
-	}
-	print "</select>";
-}
-
-
-function print_select_available_criterium($project_id) 
-{
-	global $database;
-	$query = "SELECT id, naam FROM criterium WHERE id NOT IN (SELECT criteriumid FROM project_criterium WHERE groepid = $project_id)";	
-	print "<!-- $query -->\n";
-?>
-		<select name="criterium">
+		Criterium : <select name="criterium">
 		<option value="-1" disabled selected>Kies een criterium</option>
 <?php
 	// Send the query to the database server.
@@ -136,7 +104,6 @@ function print_add_project()
 <?php
 	print_stars(1, "stars");
 ?>
-		<br />
 		<input type="submit" name="add_project" value="Toevoegen" />
 	</form>
 <?php
@@ -185,7 +152,7 @@ function print_edit_project($project_id)
 function print_project_criteria($project_id) 
 {
 	global $database;
-	$query = "SELECT criteriumid, gewicht, ROUND(m.max*gewicht,1) as max, c.naam as crit_naam, c.omschrijving as crit_omschrijvind, methodeid, pc.autocalc, m.naam as methode_naam, m.omschrijving as methode_omschrijving FROM `project_criterium` pc, criterium c, beoordeling_methode m WHERE pc.criteriumid = c.id AND c.methodeid = m.id AND groepid = :id";	
+	$query = "SELECT criteriumid, gewicht, m.max*gewicht as max, c.naam as crit_naam, c.omschrijving as crit_omschrijvind, methodeid, m.naam as methode_naam, m.omschrijving as methode_omschrijving FROM `project_criterium` pc, criterium c, beoordeling_methode m WHERE pc.criteriumid = c.id AND c.methodeid = m.id AND groepid = :id";	
 	print "<!-- $query -->\n";
 	$data = [
 		"id" => $project_id
@@ -207,44 +174,21 @@ function print_project_criteria($project_id)
 			</tr>
 <?php
 			foreach ($stmt as $record) 	{
-				if ($record["autocalc"]) {
-					$total += $record["max"];
-				}
+				$total += $record["max"];
 ?>
 			<tr>
-				<form>
-				<input type="hidden" name="project" value="<?=$project_id?>" />
-				<input type="hidden" name="criterium" value="<?=$record["criteriumid"]?>" />
 				<td><?=$record["crit_naam"]?></td>
-				<td><input type="text" name="weight" value="<?=$record["gewicht"]?>" /></td>
+				<td><?=$record["gewicht"]?></td>
 				<td><?=$record["max"]?></td>
-				<td><?=$record["methode_naam"]?></td>
 				<td>
-					<input type="submit" name="edit_crit" value="Wijzigen" />
-					<input type="submit" name="del_crit" value="Verwijderen" />
+<?php
+					print_select_method($record["methodeid"]);
+?>
 				</td>
-				</form>
 			</tr>
 <?php
 			}
 ?>
-			<tr>
-				<form>
-				<input type="hidden" name="project" value="<?=$project_id?>" />
-				<td>
-<?php
-					print_select_available_criterium($project_id);
-?>
-				</td>
-				<td><input type="text" name="weight" value="1" /></td>
-				<td>...</td>
-				<td>...</td>
-				<td>
-					<input type="submit" name="add_crit" value="Toevoegen" />
-				</td>
-				</form>			
-			</tr>
-			
 			</table>
 			<p>Maximum point available : <?=$total?></p>
 <?php

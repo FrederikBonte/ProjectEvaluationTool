@@ -77,42 +77,14 @@ function update_star_size(value) {
 	</form>
 	</p>
 <?php
-	$project_id = null;
 	if (array_key_exists("choose", $_REQUEST)) {
 		// Store the selected project id.
 		$project_id = $_REQUEST["project"];
-	}
-	else if (array_key_exists("add_project", $_REQUEST)) {
-		$name = $_REQUEST["name"];
-		$description = $_REQUEST["description"];
-		$semester = $_REQUEST["semester"];
-		$stars = $_REQUEST["stars"];
-		add_project($name, $description, $semester, $stars);
-	}
-	else if (array_key_exists("add_crit", $_REQUEST)) {
-		// Store the selected project id.
-		$project_id = $_REQUEST["project"];
-		$criterium_id = $_REQUEST["criterium"];
-		$weight = $_REQUEST["weight"];
-		add_criterium($project_id, $criterium_id, $weight);
-	}
-	else if (array_key_exists("edit_crit", $_REQUEST)) {
-		// Store the selected project id.
-		$project_id = $_REQUEST["project"];
-		$criterium_id = $_REQUEST["criterium"];
-		$weight = $_REQUEST["weight"];
-		update_criterium($project_id, $criterium_id, $weight);
-	}
-	else if (array_key_exists("del_crit", $_REQUEST)) {
-		$project_id = $_REQUEST["project"];
-		$criterium_id = $_REQUEST["criterium"];
-		remove_criterium($project_id, $criterium_id);
-	} 
-
-	if ($project_id) 
-	{
 		// Print the edit form for this project.
 		print_edit_project($project_id);
+	}
+	else if (array_key_exists("update", $_REQUEST)) {
+		
 	}
 ?>
 </body>
