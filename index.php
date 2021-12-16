@@ -81,7 +81,7 @@ function update_star_size(value) {
 		// Store the selected project id.
 		$project_id = $_REQUEST["project"];
 		// Print the edit form for this project.
-		print_edit_project($project_id);
+		print_project_criteria($project_id);
 	}
 	else if (array_key_exists("update", $_REQUEST)) {
 		

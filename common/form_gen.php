@@ -152,7 +152,7 @@ function print_edit_project($project_id)
 function print_project_criteria($project_id) 
 {
 	global $database;
-	$query = "SELECT criteriumid, gewicht, m.max*gewicht as max, c.naam as crit_naam, c.omschrijving as crit_omschrijvind, methodeid, m.naam as methode_naam, m.omschrijving as methode_omschrijving FROM `project_criterium` pc, criterium c, beoordeling_methode m WHERE pc.criteriumid = c.id AND c.methodeid = m.id AND groepid = :id";	
+	$query = "SELECT criteriumid, gewicht, ROUND(m.max*gewicht,2) as max, c.naam as crit_naam, c.omschrijving as crit_omschrijvind, pc.autocalc, methodeid, m.naam as methode_naam, m.omschrijving as methode_omschrijving FROM `project_criterium` pc, criterium c, beoordeling_methode m WHERE pc.criteriumid = c.id AND c.methodeid = m.id AND groepid = :id";	
 	print "<!-- $query -->\n";
 	$data = [
 		"id" => $project_id
@@ -174,17 +174,19 @@ function print_project_criteria($project_id)
 			</tr>
 <?php
 			foreach ($stmt as $record) 	{
-				$total += $record["max"];
+				// Should the max value be taken into account?
+				if ($record["autocalc"]==1)
+				{				
+					// Add to the maximum score for this project.
+					$total += $record["max"];
+				}
+				// For instance, we don't assume the student will get the maximum of negative points!
 ?>
 			<tr>
 				<td><?=$record["crit_naam"]?></td>
 				<td><?=$record["gewicht"]?></td>
 				<td><?=$record["max"]?></td>
-				<td>
-<?php
-					print_select_method($record["methodeid"]);
-?>
-				</td>
+				<td><?=$record["methode_naam"]?></td>
 			</tr>
 <?php
 			}
