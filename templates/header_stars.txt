@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Project Evaluatie Tool</title>
+	<link rel="stylesheet" type="text/css" href="styles/style.css" />
+	<!-- Add icon library -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script>
+function update_star(field, value) {
+	var element = document.getElementsByName(field)[0];
+	element.value = value;
+	for (i=1;i<=5;i++) {
+		var sterretje = document.getElementsByName("sterretje_"+i)[0];
+		if (i<=value) {
+			sterretje.style.color = "yellow";
+		}
+		else {
+			sterretje.style.color = "black";
+		}
+	}
+}
+
+function update_star_size(value) {
+	for (i=1;i<=5;i++) {
+		var sterretje = document.getElementsByName("sterretje_"+i)[0];
+		if (i<=value) {
+			sterretje.style.fontSize = "110%";
+		}
+		else {
+			sterretje.style.fontSize = "100%";
+		}
+	}
+}
+	</script>
+</head>
+<body>
+	<div class="navbar">
+		<h1>Project Evaluatie Tool</h1>
+		<ul>
+			<li><a href="index.php">Home</a></li>
+			<li><a href="beoordelen.php">Beoordelen</a></li>
+			<li><a href="klassen.php">Klassen en leerlingen</a></li>
+			<li><a href="docenten.php">Docenten</a></li>
+			<li><a href="projecten.php">Projecten</a></li>
+			<li><a href="criteria.php">Criteria & methoden</a></li>
+			<li><a href="demo.php">Demo & Development</a></li>
+		</ul>
+	</div>
