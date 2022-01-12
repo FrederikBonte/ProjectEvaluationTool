@@ -1,6 +1,4 @@
 <?php
-include "common/config.inc.php";
-include "common/greetings.php";
 include "common/form_gen.php";
 include "common/update_students.php";
 include "common/update_projects.php";

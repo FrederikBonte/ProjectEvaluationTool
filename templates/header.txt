@@ -5,7 +5,7 @@
 	<link rel="stylesheet" type="text/css" href="styles/style.css" />
 </head>
 <body>
-	<div class="navbar">
+	<div id="navbar">
 		<h1>Project Evaluatie Tool</h1>
 		<ul>
 			<li><a href="index.php">Home</a></li>

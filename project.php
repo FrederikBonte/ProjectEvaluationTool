@@ -3,8 +3,14 @@ include "common/form_gen.php";
 include "common/update_projects.php";
 include "templates/header_stars.txt";
 	
-print_active_projects();
-print_add_project();
+if (array_key_exists("id", $_REQUEST))
+{
+	print_edit_project($_REQUEST["id"]);
+}
+else
+{
+	print_add_project();
+}
 if (array_key_exists("choose", $_REQUEST)) {
 	// Store the selected project id.
 	$project_id = $_REQUEST["project"];

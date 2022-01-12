@@ -1,9 +1,12 @@
 <?php
+require_once "config.inc.php";
+require_once "debug.php";
+
 function print_select_method($selected_id = null) 
 {
 	global $database;
 	$query = "SELECT id, naam FROM beoordeling_methode";	
-	print "<!-- $query -->\n";
+	debug_log($query);
 ?>
 		Methode : <select name="method">
 		<option value="-1" disabled selected>Kies een methode</option>
@@ -34,7 +37,7 @@ function print_select_criterium($selected_id = null)
 {
 	global $database;
 	$query = "SELECT id, naam FROM criterium";	
-	print "<!-- $query -->\n";
+	debug_log($query);
 ?>
 		Criterium : <select name="criterium">
 		<option value="-1" disabled selected>Kies een criterium</option>
@@ -95,15 +98,15 @@ function print_select_project($selected_id = null)
 function print_add_project()
 {
 ?>
-	<h2>Nieuw project</h2>
+	<h2>Ontwerp nieuw project</h2>
 	<form>
 		Naam : <input type="text" name="name" /><br />
-		Omschrijving : <input type="textarea" name="description" /><br />
 		Semester : <input type="number" name="semester" min="1" max="8" /><br />
 		Difficulty : <input type="hidden" name="stars" min="1" max="5" />
 <?php
 	print_stars(1, "stars");
 ?>
+		<br />Omschrijving : <textarea name="description" rows="4" cols="50" placeholder="Beschrijf hier het doel van het project."></textarea><br />
 		<input type="submit" name="add_project" value="Toevoegen" />
 	</form>
 <?php
@@ -125,7 +128,7 @@ function print_edit_project($project_id)
 			// Actually read the record.
 			$row = $stmt->fetch(PDO::FETCH_ASSOC);
 ?>
-			<h2><?=$row["naam"]?></h2>
+			<h2>Project &quot;<?=$row["naam"]?>&quot;</h2>
 			<ul>
 				<li>Semester : <?=$row["semester"]?></li>
 				<li>Level : 

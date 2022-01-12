@@ -15,7 +15,7 @@ function update_star(field, value) {
 			sterretje.style.color = "yellow";
 		}
 		else {
-			sterretje.style.color = "black";
+			sterretje.style.color = "#224";
 		}
 	}
 }
@@ -34,7 +34,7 @@ function update_star_size(value) {
 	</script>
 </head>
 <body>
-	<div class="navbar">
+	<div id="navbar">
 		<h1>Project Evaluatie Tool</h1>
 		<ul>
 			<li><a href="index.php">Home</a></li>

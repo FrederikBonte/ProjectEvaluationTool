@@ -1,8 +1,62 @@
-.checked {
-	color: yellow;
+html {
+	font-size: 15pt;
+	background-color: black;
+	color: white;
+}
+
+body {
+	width: 1000px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+h1 {
+	font-size: 300%;
+}
+
+h2 {
+	font-size: 240%;
+}
+
+h3 {
+	font-size: 160%;
+}
+
+div#navbar 
+{
+	background-color: white;	
+}
+
+div#navbar h1
+{
+	font-size: 450%;
+	color: lightblue;
+	text-shadow: 2px 2px 5px gray;
+	text-align: center;
+}
+
+div#navbar img
+{
+	margin-left: auto;
+}
+
+div#navbar ul li
+{
+	display: inline;
+	width: 300px;
+	padding: 5px;
+	padding-left:20px;
+	padding-right:20px;
+	box-shadow: 2px 2px 5px black;
+	margin-left: 10px;
 }
 
 .fa-star {
 	text-shadow: 2px 2px 2px gray;
 	transition: 0.3s;
+	color: #224;
+}
+
+.checked {
+	color: yellow;
 }

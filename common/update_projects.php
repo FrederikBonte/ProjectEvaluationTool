@@ -1,4 +1,55 @@
 <?php
+require_once "config.inc.php";
+require_once "debug.php";
+
+function print_active_projects()
+{
+	global $database;
+	
+	$query  = "SELECT * FROM project";
+	debug_log($query);
+?>
+	<h2>Actieve projecten</h2>
+	<table>
+		<tr><th>Naam</th><th>Semstr</th><th width="120px">Sterren</th><th>Omschrijving</th></tr>		
+<?php
+	try {
+		$stmt = $database->query($query);	
+		while ($record = $stmt->fetch(PDO::FETCH_ASSOC))
+		{
+			print_project($record);
+		}	
+	}
+	catch (Exception $ex) 
+	{
+		debug_error("Failed to read projects because ", $ex);
+	}
+	print "</table>";
+}
+
+function print_project($record)
+{
+		//debug_dump($record);
+	
+	$id = $record["id"];
+	$name = $record["naam"];
+	$semester = $record["semester"];
+	$stars = $record["sterren"];
+	$description = $record["omschrijving"];
+?>
+	<input type="hidden" name="project_id" value="<?=$id?>" />
+	<tr>
+		<td><a href="project.php?id=<?=$id?>"><?=$name?></a></td>
+		<td><?=$semester?></td>
+		<td>
+<?php
+	print_stars($stars);
+?></td>
+		<td><?=$description?></td>
+	</tr>
+	</form>
+<?php
+}
 
 function add_project($name, $description, $semester, $stars)
 {
@@ -7,7 +58,7 @@ function add_project($name, $description, $semester, $stars)
 	$query  = "INSERT INTO project (naam, semester, sterren, omschrijving) ";
 	$query .= "VALUES (:veld1, :veld2, :veld3, :veld4)";	
 	
-	print "<!-- $query -->\n";
+	debug_log($query);
 
 	$data = [
 		"veld1" => $naam,
@@ -17,20 +68,20 @@ function add_project($name, $description, $semester, $stars)
 	];
 	
 	try {
-		print "About to add new project.";
+		debug_log("About to add new project.");
 		$stmt = $database->prepare($query);
 		if ($stmt->execute($data)) 
 		{
-			print "Project successfully added.";
+			debug_log("Project successfully added.");
 			$id = PDO::lastInsertId();
 			add_group($id);
 		} 
 		else 
 		{
-			print "Database refused to add new project.";
+			debug_warning("Database refused to add new project.");
 		}
 	} catch (Exception $ex) {
-		print "ERROR: Failed to add project : ".$ex->getMessage();
+		debug_error("Failed to read projects because ", $ex);
 	}
 }
 
@@ -40,27 +91,27 @@ function add_group($id) {
 	$query  = "INSERT INTO criterium_groep (id, parent_project, methode, naam) ";
 	$query .= "VALUES (:veld1, null, :veld1, 1, 'Hoofdgroep')";	
 	
-	print "<!-- $query -->\n";
+	debug_log($query);
 
 	$data = [
 		"veld1" => $id
 	];
 	
 	try {
-		print "About to add new group.";
+		debug_log("About to add new group.");
 		$stmt = $database->prepare($query);
 		if ($stmt->execute($data)) 
 		{
-			print "Group successfully added.";
+			debug_log("Group successfully added.");
 			$id = PDO::lastInsertId();
 			add_group($id);
 		} 
 		else 
 		{
-			print "Database refused to add new group.";
+			print_warning("Database refused to add new group.");
 		}
 	} catch (Exception $ex) {
-		print "ERROR: Failed to add group : ".$ex->getMessage();
+		debug_error("Failed to read projects because ", $ex);
 	}
 }
 
@@ -74,7 +125,7 @@ function update_project($id, $name, $description, $stars)
 	$query .= "    klas = :veld3 ";
 	$query .= "WHERE llnr = :veld0";
 		
-	print "<!-- $query -->\n";
+	debug_log($query);
 
 	$data = [	
 		"veld0" => $number,
@@ -84,20 +135,18 @@ function update_project($id, $name, $description, $stars)
 	];
 	
 	try {
-		print "About to change student $number.";
+		debug_log("About to change student $number.");
 		$stmt = $database->prepare($query);
 		if ($stmt->execute($data)) 
 		{
-			print "Student successfully updated.";
+			debug_log("Student successfully updated.");
 		} 
 		else 
 		{
-			print "Database refused to update this student.";
+			debug_warning("Database refused to update this student.");
 		}
 	} catch (Exception $ex) {
-		print "ERROR: Failed to update student : ".$ex->getMessage();
+		debug_error("Failed to read projects because ", $ex);
 	}
 }
-
-
 ?>
