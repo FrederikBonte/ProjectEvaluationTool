@@ -1,6 +1,5 @@
 <?php
-include "common/form_gen.php";
-include "common/update_projects.php";
+require_once "common/projects.php";
 include "templates/header_stars.txt";
 	
 if (array_key_exists("add_project", $_REQUEST)) {

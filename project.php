@@ -1,7 +1,6 @@
 <?php
-include "common/form_gen.php";
-include "common/update_projects.php";
-include "common/criteria.php";
+require_once "common/criteria.php";
+require_once "common/projects.php";
 include "templates/header_stars.txt";
 	
 $edit = false;
@@ -37,6 +36,14 @@ else if (array_key_exists("add_crit", $_REQUEST))
 	$weight = $_REQUEST["weight"];
 	$autocalc = array_key_exists("autocalc", $_REQUEST)?1:0;
 	add_project_criterium($group_id, $crit_id, $weight, $autocalc);
+	$project_id = $group_id;
+	$edit = true;
+}
+else if (array_key_exists("remove_crit", $_REQUEST)) 
+{
+	$group_id = $_REQUEST["group_id"];
+	$crit_id = $_REQUEST["crit_id"];
+	remove_project_criterium($group_id, $crit_id);
 	$project_id = $group_id;
 	$edit = true;
 }

@@ -1,7 +1,4 @@
 <?php
-include "common/form_gen.php";
-include "common/update_students.php";
-include "common/update_projects.php";
 include "templates/header.txt";
 	// @TODO:
 	// * Manage the list of possible reward methods.

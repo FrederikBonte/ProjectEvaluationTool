@@ -249,4 +249,79 @@ function update_project_criterium($group_id, $crit_id, $weight, $autocalc)
 		debug_error("Failed to update criterium for project because ", $ex);
 	}
 }
+
+function remove_project_criterium($group_id, $crit_id)
+{
+	global $database;
+	
+	$query  = "DELETE FROM project_criterium ";
+	$query .= "WHERE groepid=:veld1 AND criteriumid=:veld2";	
+	
+	debug_log($query);
+
+	$data = [
+		"veld1" => $group_id,
+		"veld2" => $crit_id
+	];
+	
+	try 
+	{
+		debug_log("About to remove criterium from project.");
+		$stmt = $database->prepare($query);
+		if ($stmt->execute($data)) 
+		{
+			debug_log("Criterium successfully removed.");
+		} 
+		else 
+		{
+			print_warning("Database refused to remove criterium from project.");
+		}
+	} 
+	catch (Exception $ex) 
+	{
+		debug_error("Failed to remove criterium from project because ", $ex);
+	}
+}
+
+function add_criterium($name, $description, $method_id, $autocalc)
+{
+	global $database;
+	
+	$query  = "INSERT INTO criterium (naam, omschrijving, methodeid, autocalc) ";
+	$query .= "VALUES (:veld1, :veld2, :veld3, :veld4)";	
+	
+	debug_log($query);
+
+	$data = [
+		"veld1" => $name,
+		"veld2" => $description,
+		"veld3" => $method_id,
+		"veld4" => $autocalc
+	];
+	
+	try {
+		debug_log("About to add new criterium.");
+		$stmt = $database->prepare($query);
+		if ($stmt->execute($data)) 
+		{
+			debug_log("Criterium successfully added.");
+			$id = $database->lastInsertId();
+			return $id;
+		} 
+		else 
+		{
+			debug_warning("Database refused to add new criterium.");
+		}
+	} catch (Exception $ex) {
+		debug_error("Failed to create a new criterium because ", $ex);
+	}
+}
+
+function create_project_criterium($group_id, $name, $method_id, $weight, $autocalc)
+{
+	// Create a new criterium without a description... :(
+	$crit_id = add_criterium($name, null, $method_id, $autocalc);
+	// Add that new criterium to the project/group.
+	add_project_criterium($group_id, $crit_id, $weight, $autocalc);	
+}
 ?>
