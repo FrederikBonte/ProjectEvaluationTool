@@ -3,17 +3,24 @@ include "common/form_gen.php";
 include "common/update_projects.php";
 include "templates/header_stars.txt";
 	
+if (array_key_exists("add_project", $_REQUEST)) {
+	$name = $_REQUEST["name"];
+	$semester = $_REQUEST["semester"];
+	$stars = $_REQUEST["stars"];
+	$description = $_REQUEST["description"];
+	$project_id = add_project($name, $description, $semester, $stars);
+}
+else if (array_key_exists("update_project", $_REQUEST)) {
+	$project_id = $_REQUEST["project_id"];
+	$name = $_REQUEST["name"];
+	$semester = $_REQUEST["semester"];
+	$stars = $_REQUEST["stars"];
+	$description = $_REQUEST["description"];
+	update_project($project_id, $name, $description, $semester, $stars);
+}
+
 print_active_projects();
-print_add_project();
-if (array_key_exists("choose", $_REQUEST)) {
-	// Store the selected project id.
-	$project_id = $_REQUEST["project"];
-	// Print the edit form for this project.
-	print_project_criteria($project_id);
-}
-else if (array_key_exists("update", $_REQUEST)) {
-	
-}
+print_add_project_form();
 ?>
 </body>
 </html>
