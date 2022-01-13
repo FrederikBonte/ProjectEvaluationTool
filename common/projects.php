@@ -38,7 +38,9 @@ function print_active_projects()
 {
 	global $database;
 	
-	$query  = "SELECT * FROM project";
+	$query  = 	"SELECT project.id, project.naam, project.omschrijving, project.semester, project.sterren, project.actief, project.blauwdruk, (MAX(leerlingnummer) IS NOT NULL) as gebruikt ".
+				"FROM project LEFT JOIN beoordeling ON groepid=project.id ".
+				"GROUP BY project.id, project.naam, project.omschrijving, project.semester, project.sterren, project.actief, project.blauwdruk";
 	debug_log($query);
 ?>
 	<h2>Actieve projecten</h2>
@@ -68,10 +70,12 @@ function print_project_short($record)
 	$semester = $record["semester"];
 	$stars = $record["sterren"];
 	$description = $record["omschrijving"];
+	$edit = $record["gebruikt"]?"":"&edit";
+	$active = ($record["actief"]==1)?"checked":"";
 ?>
 	<input type="hidden" name="project_id" value="<?=$id?>" />
 	<tr>
-		<td><a href="project.php?id=<?=$id?>"><?=$name?></a></td>
+		<td><a href="project.php?id=<?=$id?><?=$edit?>"><?=$name?></a></td>
 		<td><?=$semester?></td>
 		<td>
 <?php
