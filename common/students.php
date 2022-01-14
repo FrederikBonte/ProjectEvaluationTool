@@ -1,5 +1,11 @@
 <?php
 
+function print_select_klas()
+{
+}
+
+// BELOW ARE ALL THE FUNCTIONS THAT manipulate the database.
+
 function add_student($firstname, $lastname, $klas)
 {
 	global $database;

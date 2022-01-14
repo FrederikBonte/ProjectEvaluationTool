@@ -1,6 +1,7 @@
 <?php
-require_once "config.inc.php";
-require_once "debug.php";
+require_once "common/config.inc.php";
+require_once "common/debug.php";
+require_once "common/form_gen.php";
 
 function print_select_method($selected_id = null, $label = null) 
 {
@@ -342,9 +343,11 @@ function print_edit_method($record)
 ?>
 			<tr>
 			<form>
-				<input type="hidden" name="method_id" value="<?=$record["id"]?>" />
-				<td><input type="text" name="name" value="<?=$record["naam"]?>" /></td>
-				<td><input type="text" name="description" value="<?=$record["omschrijving"]?>" /></td>
+<?php
+	print_hidden_input("method_id", $record["id"]);
+?>
+				<td><?php print_text_input("name", $record["naam"]); ?></td>
+				<td><?php print_text_input("description", $record["omschrijving"]); ?></td>
 <?php
 	// Only methods that are not in use may change their rewarding method.
 	// Otherwise points that are already awarded to students change their meaning.
@@ -365,14 +368,12 @@ function print_edit_method($record)
 ?>
 				
 				<td>
-					<button type="submit" name="update_method">Wijzigen</button>
 <?php
+	print_submit_button("update_method", "Wijzigen");
 	// Only methods that are not used by a criterium can be deleted.
 	if ($deletable) 
 	{
-?>
-					<button type="submit" name="remove_method">Verwijderen</button>
-<?php
+		print_submit_button("remove_method", "Verwijderen");
 	}
 ?>
 				</td>
