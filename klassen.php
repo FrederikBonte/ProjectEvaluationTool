@@ -24,12 +24,28 @@ if (array_key_exists("update_student", $_REQUEST))
 		update_student($id, $firstname, $middlename, $lastname, $klas, $active);
 	}
 }
+else if (array_key_exists("import", $_REQUEST))
+{
+	$klas = $_REQUEST["klas"];
+	//debug_dump($_FILES);	
+	$file = $_FILES["students"];
+	//debug_dump($file);	
+	if (substr($file["name"], strlen($file["name"])-3=="txt"))
+	{
+		import_students_csv($klas, $file["tmp_name"]);
+	}
+	else
+	{
+		debug_warning("Alleen tekst bestanden kunnen op dit moment geimporteerd worden.");
+	}
+}
 	
-print_select_klas();
-print_select_student("0SV1");
+//print_select_klas();
+//print_select_student("0SV1");
 ?>
 <br/>
-<form>
+<h3>Klas bewerken</h3>
+<form method="POST" enctype="multipart/form-data">
 <?php
 $klas_id = null;
 if (array_key_exists("klas", $_REQUEST))
@@ -39,8 +55,22 @@ if (array_key_exists("klas", $_REQUEST))
 
 print_select_any_klas($klas_id, "Toon deze klas : ");
 print_submit_button("show", "Tonen");
+echo "<br />";
+?>
+<input type="file" name="students" />
+<?php
+print_submit_button("import", "Importeren");
+
 ?>
 </form>
+<h3>Exporteren</h3>
+<form method="POST" action="export_students.php">
+<?php
+print_select_any_klas($klas_id, "Exporteer deze klas : ");
+print_submit_button("xml", "XML");
+print_submit_button("csv", "CSV");
+?>
+</form
 <?php
 print_edit_students($klas_id);
 ?>

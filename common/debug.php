@@ -19,6 +19,13 @@ function debug_warning($message)
 <?php
 }
 	
+function debug_info($message)
+{
+?>
+	<p class="info"><?=$message?></p>
+<?php
+}
+	
 function debug_error($message, $ex=null)
 {
 ?>

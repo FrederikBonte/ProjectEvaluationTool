@@ -22,13 +22,14 @@ include "templates/header.txt";
 	//   ONLY un-awarded methods may still be changed (min/max value)
 	// * Manage the list of all possible criteria.
 	//   NEVER REMOVE CRITERIA THAT WERE ALREADY AWARDED TO STUDENTS!!!
+	// * Manage the list of students.
 	// @TODO:
 	// * Create a new editable copy of a project for new classes.
 	//   Original project then always(?) becomes inactive.
 	// * Handle template projects (cannot be used to reward points, only as copy source.)
+	// * Import students through xml.
 	// * Manage the list of teachers.
 	// * Manage the list of classes.
-	// * Manage the list of students.
 	// * Choose who is teaching and select the required class.
 	// * Generate an "I talked to this student" screen. ("evaluatie")
 	// * Choose a project to reward for a student.

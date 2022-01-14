@@ -33,7 +33,8 @@ function print_edit_students($klas_id = null)
 			"LEFT JOIN beoordeling ON beoordeling.leerlingnummer = leerling.nummer ".
 			"LEFT JOIN evaluatie ON evaluatie.leerlingnummer = leerling.nummer ".
 			(($klas_id==null)?"":"WHERE klas='$klas_id' ").
-			"GROUP BY leerling.nummer, leerling.voornaam, leerling.tussenvoegsel, leerling.achternaam, leerling.klas, leerling.actief";
+			"GROUP BY leerling.nummer, leerling.voornaam, leerling.tussenvoegsel, leerling.achternaam, leerling.klas, leerling.actief ".
+			"ORDER BY achternaam, voornaam";
 	debug_log($query);
 	
 	try {
@@ -102,38 +103,124 @@ function print_edit_student($record)
 
 // BELOW ARE ALL THE FUNCTIONS THAT manipulate the database.
 
-function add_student($firstname, $lastname, $klas)
+function import_students_csv($klas_id, $filename)
 {
-	global $database;
-	
-	$query  = "INSERT INTO leerlingen (voornaam, achternaam, klas, geslacht, geb_datum) ";
-	$query .= "VALUES (:veld1, :veld2, :veld3, \"j\", \"1987-12-27\")";	
-	
-	print "<!-- $query -->\n";
-
-	$data = [
-		"veld1" => $firstname,
-		"veld2" => $lastname,
-		"veld3" => $klas
-	];
-	
-	try {
-		print "About to add new student.";
-		$stmt = $database->prepare($query);
-		if ($stmt->execute($data)) 
+	// Open the file to READ.
+	if ($file = fopen($filename, "r")) 
+	{
+		$added = 0;
+		$updated = 0;
+		// While there are still more lines...
+		while(!feof($file)) 
 		{
-			print "Student successfully added.";
-		} 
-		else 
-		{
-			print "Database refused to add new student.";
+			$line = fgets($file);
+			// Skip empty lines
+			if (strlen(trim($line))==0) 
+			{
+				continue;
+			}
+			else if (substr($line, 0, 1)=="#")
+			{
+				// Ignore lines that start with a '#' (comments in the file.)
+				continue;
+			}
+			$parts = explode(";", $line);
+			$number = trim($parts[0]);
+			$firstname = trim($parts[1]);
+			$middle = trim($parts[2]);
+			$lastname = trim($parts[3]);
+			if (strlen($middle)==0)
+			{
+				$middle = null;
+			}
+			
+			if (student_exists($number))
+			{
+				update_student($number, $firstname, $middle, $lastname, $klas_id);
+				$updated++;
+			}
+			else
+			{
+				add_student($number, $firstname, $middle, $lastname, $klas_id);
+				$added++;
+			}	
 		}
-	} catch (Exception $ex) {
-		print "ERROR: Failed to add student : ".$ex->getMessage();
+		fclose($file);
+		debug_info("File was processed. $added new student(s) were added, $updated student(s) were updated.");
+	}
+	else
+	{
+		debug_warning("Failed to open the file '$filename' for reading.");
 	}
 }
 
-function update_student($number, $firstname, $middlename, $lastname, $klas, $active = 1)
+function student_exists($number)
+{
+	global $database;
+	
+	$query  = "SELECT * FROM leerling WHERE nummer=:veld0";	
+	debug_log($query);
+
+	$data = [
+		"veld0" => $number
+	];
+	
+	try 
+	{
+		$stmt = $database->prepare($query);
+		if ($stmt->execute($data)) 
+		{
+			// Return (effectively) true when a matching student has been found.
+			return $stmt->fetch(PDO::FETCH_ASSOC);
+		} 
+		else 
+		{
+			debug_warning("Database refused to search for student.");
+		}
+	} 
+	catch (Exception $ex) 
+	{
+		debug_error("ERROR: Failed to read student table : ", $ex);
+	}	
+}
+
+function add_student($number, $firstname, $middle, $lastname, $klas)
+{
+	global $database;
+	
+	$query  = "INSERT INTO leerling (nummer, voornaam, tussenvoegsel, achternaam, klas) ";
+	$query .= "VALUES (:veld0, :veld1, :veld2a, :veld2b, :veld3)";	
+	
+	debug_log($query);
+
+	$data = [
+		"veld0" => $number,
+		"veld1" => $firstname,
+		"veld2a" => $middle,
+		"veld2b" => $lastname,
+		"veld3" => $klas
+	];
+	
+	try 
+	{
+		debug_log("About to add new student.");
+		$stmt = $database->prepare($query);
+		if ($stmt->execute($data)) 
+		{
+			debug_log("Student successfully added.");
+		} 
+		else 
+		{
+			debug_warning("Database refused to add new student.");
+		}
+	} 
+	catch (Exception $ex) 
+	{
+		debug_error("ERROR: Failed to add student : ", $ex);
+	}
+}
+
+function update_student($number, $firstname, $middle, $lastname, $klas, $active = 1)
 {
 	global $database;
 	
@@ -150,7 +237,7 @@ function update_student($number, $firstname, $middlename, $lastname, $klas, $act
 	$data = [	
 		"veld0" => $number,
 		"veld1" => $firstname,
-		"veld2a" => $middlename,
+		"veld2a" => $middle,
 		"veld2b" => $lastname,
 		"veld3" => $klas,
 		"veld4" => $active

@@ -60,3 +60,22 @@ div#navbar ul li
 .checked {
 	color: yellow;
 }
+
+.info {
+	border: yellow 1px;
+	padding: 5px;
+}
+
+.warning {
+	border: red 2px;
+	background-color: yellow;
+	color: black;
+	padding: 5px;	
+}
+
+.error {
+	border: white 2px;
+	background-color: lightred;
+	color: black;
+	padding: 5px;	
+}
