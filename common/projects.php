@@ -1,7 +1,7 @@
 <?php
-require_once "config.inc.php";
-require_once "debug.php";
-require_once "criteria.php";
+require_once "common/config.inc.php";
+require_once "common/debug.php";
+require_once "common/criteria.php";
 
 function print_select_project($selected_id = null, $label = null) 
 {

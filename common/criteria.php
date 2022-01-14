@@ -177,6 +177,226 @@ function print_create_project_criterium($project_id)
 <?php
 }
 
+function print_all_criteria()
+{
+	global $database;
+	$query = 	"SELECT criterium.*, beoordeling_methode.naam as methode_naam, (MAX(leerlingnummer) IS NOT NULL) as in_gebruik ".
+				"FROM criterium ".
+				"INNER JOIN beoordeling_methode ON criterium.methodeid=beoordeling_methode.id ".
+				"LEFT JOIN beoordeling ON criteriumid=criterium.id ".
+				"GROUP BY  criterium.id, criterium.naam, criterium.omschrijving, criterium.methodeid, criterium.autocalc, beoordeling_methode.naam";	
+	debug_log($query);
+	
+	try {
+		$stmt = $database->prepare($query);
+		if ($stmt->execute()) 
+		{
+?>
+			<h2>Beoordelings criteria</h2>
+			<p>
+				Merk op dat voor gebruikte criteria de beoordelings methode niet meer veranderd mag worden
+				omdat dan het cijfer van de student ook zou veranderen.
+			</p>
+			<table>
+			<tr>
+				<th>Naam</th>
+				<th>Omschrijving</th>
+				<th>Methode</th>
+				<th>Meerekenen</th>
+				<th>Actie</th>
+			</tr>
+<?php
+			foreach ($stmt as $record) 	{
+				// For instance, we don't assume the student will get the maximum of negative points!
+				print_edit_criterium($record);
+			}
+			print_add_criterium();
+?>
+			</table>
+<?php
+		} 
+		else 
+		{
+			debug_warning("Database refused to read criteria.");
+		}
+	} catch (Exception $ex) {
+		debug_error("ERROR: Failed to load criteria : ", $ex);
+	}
+}
+
+function print_edit_criterium($record)
+{
+	$autocalc_checked = ($record["autocalc"]==1)?"checked":"";
+	$editable = $record["in_gebruik"]==0;
+	//debug_dump($record);
+?>
+			<tr>
+			<form>
+				<input type="hidden" name="crit_id" value="<?=$record["id"]?>" />
+				<td><input type="text" name="name" value="<?=$record["naam"]?>" /></td>
+				<td><input type="text" name="description" value="<?=$record["omschrijving"]?>" /></td>
+<?php
+	// Only criteria that are not in use may change their rewarding method.
+	// Otherwise points that are already awarded to students change their meaning.
+	if ($editable) 
+	{
+?>
+		<td><?php print_select_method($record["methodeid"]); ?></td>
+<?php
+	}
+	else
+	{
+?>
+		<td><input type="hidden" name="method" value="<?=$record["methodeid"]?>" /><?=$record["methode_naam"]?></td>
+<?php
+	}
+?>
+				
+				<td><input type="checkbox" name="autocalc" <?=$autocalc_checked?> /></td>
+				<td>
+					<button type="submit" name="update_crit">Wijzigen</button>
+<?php
+	// Only criteria that are not in use may be removed.
+	if ($editable) 
+	{
+?>
+					<button type="submit" name="remove_crit">Verwijderen</button>
+<?php
+	}
+?>
+				</td>
+			</form>
+			</tr>
+<?php
+}
+
+function print_add_criterium()
+{
+?>
+			<tr>
+			<form>
+				<td><input type="text" name="name" /></td>
+				<td><input type="text" name="description" /></td>
+				<td><?php print_select_method(); ?></td>
+				<td><input type="checkbox" name="autocalc" checked /></td>
+				<td>
+					<button type="submit" name="add_crit">Toevoegen</button>
+				</td>
+			</form>
+			</tr>
+<?php
+}
+
+function print_all_methods()
+{
+	global $database;
+	$query = 	"SELECT beoordeling_methode.*, (MAX(leerlingnummer) IS NOT NULL) as in_gebruik, (MAX(criterium.id) IS NOT NULL) as verbonden ".
+				"FROM `beoordeling_methode` ".
+				"LEFT JOIN criterium ON criterium.methodeid = beoordeling_methode.id ".
+				"LEFT JOIN beoordeling ON beoordeling.criteriumid = criterium.id ".
+				"GROUP BY beoordeling_methode.id, beoordeling_methode.naam, beoordeling_methode.omschrijving, beoordeling_methode.min, beoordeling_methode.max";	
+	debug_log($query);
+	
+	try {
+		$stmt = $database->prepare($query);
+		if ($stmt->execute()) 
+		{
+?>
+			<h2>Beoordelings methoden</h2>
+			<p>
+				Merk op dat voor gebruikte methoden de minimale en maximale waarden niet meer veranderd mogen worden
+				omdat dan het cijfer van de student ook zou veranderen.
+			</p>
+			<table>
+			<tr>
+				<th>Naam</th>
+				<th>Omschrijving</th>
+				<th>Min</th>
+				<th>Max</th>
+				<th>Actie</th>
+			</tr>
+<?php
+			foreach ($stmt as $record) 	{
+				// For instance, we don't assume the student will get the maximum of negative points!
+				print_edit_method($record);
+			}
+			print_add_method();
+?>
+			</table>
+<?php
+		} 
+		else 
+		{
+			debug_warning("Database refused to read methods.");
+		}
+	} catch (Exception $ex) {
+		debug_error("ERROR: Failed to load methods : ", $ex);
+	}
+}
+
+function print_edit_method($record)
+{
+	$editable = $record["in_gebruik"]==0;
+	$deletable = $record["verbonden"]==0;
+	//debug_dump($record);
+?>
+			<tr>
+			<form>
+				<input type="hidden" name="method_id" value="<?=$record["id"]?>" />
+				<td><input type="text" name="name" value="<?=$record["naam"]?>" /></td>
+				<td><input type="text" name="description" value="<?=$record["omschrijving"]?>" /></td>
+<?php
+	// Only methods that are not in use may change their rewarding method.
+	// Otherwise points that are already awarded to students change their meaning.
+	if ($editable) 
+	{
+?>
+		<td><input type="number" name="min" value="<?=$record["min"]?>" /></td>
+		<td><input type="number" name="max" value="<?=$record["max"]?>" /></td>
+<?php
+	}
+	else
+	{
+?>
+		<td><input type="hidden" name="min" value="<?=$record["min"]?>" /><?=$record["min"]?></td>
+		<td><input type="hidden" name="max" value="<?=$record["max"]?>" /><?=$record["max"]?></td>
+<?php
+	}
+?>
+				
+				<td>
+					<button type="submit" name="update_method">Wijzigen</button>
+<?php
+	// Only methods that are not used by a criterium can be deleted.
+	if ($deletable) 
+	{
+?>
+					<button type="submit" name="remove_method">Verwijderen</button>
+<?php
+	}
+?>
+				</td>
+			</form>
+			</tr>
+<?php
+}
+
+function print_add_method()
+{
+?>
+			<tr>
+			<form>
+				<td><input type="text" name="name" /></td>
+				<td><input type="text" name="description" /></td>
+				<td><input type="number" name="min" min="0" value="<?=$record["min"]?>" /></td>
+				<td><input type="number" name="max" min="1" value="<?=$record["max"]?>" /></td>
+				<td>
+					<button type="submit" name="add_method">Toevoegen</button>
+				</td>
+			</form>
+			</tr>
+<?php
+}
 
 /// BELOW are the actual database manipulation functions for criteria and measurement methods.
 
@@ -316,6 +536,175 @@ function add_criterium($name, $description, $method_id, $autocalc)
 		debug_error("Failed to create a new criterium because ", $ex);
 	}
 }
+
+function update_criterium($crit_id, $name, $description, $method_id, $autocalc)
+{
+	global $database;
+	
+	$query  = "UPDATE criterium SET naam=:veld1, omschrijving=:veld2, methodeid=:veld3, autocalc=:veld4 ";
+	$query .= "WHERE id = :veld0";	
+	
+	debug_log($query);
+
+	$data = [
+		"veld0" => $crit_id,
+		"veld1" => $name,
+		"veld2" => $description,
+		"veld3" => $method_id,
+		"veld4" => $autocalc
+	];
+	
+	try {
+		debug_log("About to update new criterium.");
+		$stmt = $database->prepare($query);
+		if ($stmt->execute($data)) 
+		{
+			debug_log("Criterium successfully updated.");
+			$id = $database->lastInsertId();
+			return $id;
+		} 
+		else 
+		{
+			debug_warning("Database refused to update criterium.");
+		}
+	} catch (Exception $ex) {
+		debug_error("Failed to update the criterium because ", $ex);
+	}
+}
+
+function remove_criterium($crit_id)
+{
+	global $database;
+	
+	$query  = "DELETE FROM criterium ";
+	$query .= "WHERE id=:veld1";	
+	
+	debug_log($query);
+
+	$data = [
+		"veld1" => $crit_id
+	];
+	
+	try 
+	{
+		debug_log("About to remove criterium.");
+		$stmt = $database->prepare($query);
+		if ($stmt->execute($data)) 
+		{
+			debug_log("Criterium successfully removed.");
+		} 
+		else 
+		{
+			print_warning("Database refused to remove criterium.");
+		}
+	} 
+	catch (Exception $ex) 
+	{
+		debug_error("Failed to remove criterium because ", $ex);
+	}
+}
+
+function add_method($name, $description, $min, $max)
+{
+	global $database;
+	
+	$query  = "INSERT INTO beoordeling_methode (naam, omschrijving, min, max) ";
+	$query .= "VALUES (:veld1, :veld2, :veld3, :veld4)";	
+	
+	debug_log($query);
+
+	$data = [
+		"veld1" => $name,
+		"veld2" => $description,
+		"veld3" => $min,
+		"veld4" => $max
+	];
+	
+	try {
+		debug_log("About to add new method.");
+		$stmt = $database->prepare($query);
+		if ($stmt->execute($data)) 
+		{
+			debug_log("Method successfully added.");
+			$id = $database->lastInsertId();
+			return $id;
+		} 
+		else 
+		{
+			debug_warning("Database refused to add new method.");
+		}
+	} catch (Exception $ex) {
+		debug_error("Failed to create a new method because ", $ex);
+	}
+}
+
+function update_method($method_id, $name, $description, $min, $max)
+{
+	global $database;
+	
+	$query  = "UPDATE beoordeling_methode SET naam=:veld1, omschrijving=:veld2, min=:veld3, max=:veld4 ";
+	$query .= "WHERE id = :veld0";	
+	
+	debug_log($query);
+
+	$data = [
+		"veld0" => $method_id,
+		"veld1" => $name,
+		"veld2" => $description,
+		"veld3" => $min,
+		"veld4" => $max
+	];
+	
+	try {
+		debug_log("About to update method.");
+		$stmt = $database->prepare($query);
+		if ($stmt->execute($data)) 
+		{
+			debug_log("Method successfully updated.");
+			$id = $database->lastInsertId();
+			return $id;
+		} 
+		else 
+		{
+			debug_warning("Database refused to update method.");
+		}
+	} catch (Exception $ex) {
+		debug_error("Failed to update method because ", $ex);
+	}
+}
+
+function remove_method($method_id)
+{
+	global $database;
+	
+	$query  = "DELETE FROM beoordeling_methode ";
+	$query .= "WHERE id=:veld1";	
+	
+	debug_log($query);
+
+	$data = [
+		"veld1" => $method_id
+	];
+	
+	try 
+	{
+		debug_log("About to remove method.");
+		$stmt = $database->prepare($query);
+		if ($stmt->execute($data)) 
+		{
+			debug_log("Method successfully removed.");
+		} 
+		else 
+		{
+			print_warning("Database refused to remove method.");
+		}
+	} 
+	catch (Exception $ex) 
+	{
+		debug_error("Failed to remove method because ", $ex);
+	}
+}
+
 
 function create_project_criterium($group_id, $name, $method_id, $weight, $autocalc)
 {
