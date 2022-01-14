@@ -23,6 +23,8 @@ include "templates/header.txt";
 	// * Manage the list of all possible criteria.
 	//   NEVER REMOVE CRITERIA THAT WERE ALREADY AWARDED TO STUDENTS!!!
 	// * Manage the list of students.
+	// * Import students from CSV.
+	// * Export students to CSV and XML.
 	// @TODO:
 	// * Create a new editable copy of a project for new classes.
 	//   Original project then always(?) becomes inactive.
