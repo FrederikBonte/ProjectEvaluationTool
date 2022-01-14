@@ -64,10 +64,10 @@ function print_edit_students($klas_id = null)
 		} 
 		else 
 		{
-			debug_warning("Database refused to read methods.");
+			debug_warning("Database refused to read students.");
 		}
 	} catch (Exception $ex) {
-		debug_error("ERROR: Failed to load methods : ", $ex);
+		debug_error("ERROR: Failed to load students : ", $ex);
 	}	
 }
 
@@ -99,6 +99,84 @@ function print_edit_student($record)
 			</form>
 			</tr>
 <?php
+}
+
+function export_students_csv($klas_id)
+{
+global $database;
+	$query = "SELECT * ".
+			"FROM leerling ".
+			"WHERE klas=? and actief=1 ".
+			"ORDER BY achternaam, voornaam";
+	try {
+		$stmt = $database->prepare($query);
+		if ($stmt->execute([$klas_id])) 
+		{
+			print "# leerlingen $klas_id\n";
+			foreach ($stmt as $record) 	{
+				$number = $record["nummer"];
+				$firstname = $record["voornaam"];
+				$middle = $record["tussenvoegsel"];
+				$lastname = $record["achternaam"];
+				print "$number;$firstname;$middle;$lastname\n";
+			}
+		} 
+		else 
+		{
+			debug_warning("Database refused to read students.");
+		}
+	} catch (Exception $ex) {
+		debug_error("ERROR: Failed to load students : ", $ex);
+	}	
+}
+
+function export_students_xml($klas_id)
+{
+global $database;
+	$query = "SELECT * ".
+			"FROM leerling ".
+			"WHERE klas=? and actief=1 ".
+			"ORDER BY achternaam, voornaam";
+	try {
+		$stmt = $database->prepare($query);
+		if ($stmt->execute([$klas_id])) 
+		{
+			print "<?xml version=\"1.0\"?>\n";
+			print "<!-- Leerlingen $klas_id -->\n";
+			print "<leerlingen>\n";
+			foreach ($stmt as $record) 	{
+				$number = $record["nummer"];
+				$firstname = $record["voornaam"];
+				$middle = $record["tussenvoegsel"];
+				$lastname = $record["achternaam"];
+?>
+	<leerling>
+		<nummer><?=$number?></nummer>
+		<voornaam><?=$firstname?></voornaam>
+<?php
+				if ($middle && strlen(trim($middle))>0)
+				{
+?>		<tussenvoegsel><?=$middle?></tussenvoegsel><?php
+				}
+				else
+				{
+?>		<tussenvoegsel /><?php
+				}
+?>
+		
+		<achternaam><?=$firstname?></achternaam>
+	</leerling>
+<?php
+			}
+			print "</leerlingen>";
+		} 
+		else 
+		{
+			debug_warning("Database refused to read students.");
+		}
+	} catch (Exception $ex) {
+		debug_error("ERROR: Failed to load students : ", $ex);
+	}	
 }
 
 // BELOW ARE ALL THE FUNCTIONS THAT manipulate the database.
