@@ -78,20 +78,20 @@ function print_edit_student($record)
 			<tr>
 			<form>
 <?php
-	print_hidden_input("leerling_id", $record["nummer"]);
+	print_hidden_input("student_id", $record["nummer"]);
 ?>
-				<td><?php print_text_input("firstname", $record["voornaam"]); ?></td>
-				<td><?php print_text_input("middlename", $record["tussenvoegsel"]); ?></td>
-				<td><?php print_text_input("lastname", $record["achternaam"]); ?></td>
+				<td><?php print_text_input("firstname", mb_convert_encoding($record["voornaam"], "utf8")); ?></td>
+				<td><?php print_text_input("middlename", mb_convert_encoding($record["tussenvoegsel"], "utf8")); ?></td>
+				<td><?php print_text_input("lastname", mb_convert_encoding($record["achternaam"], "utf8")); ?></td>
 				<td><?php print_select_klas($record["klas"]); ?></td>
 				<td><?php print_checkbox("actief", $record["actief"]); ?></td>
 				<td>
 <?php
-	print_submit_button("update_method", "Wijzigen");
+	print_submit_button("update_student", "Wijzigen");
 	// Only methods that are not used by a criterium can be deleted.
 	if ($deletable) 
 	{
-		print_submit_button("remove_method", "Verwijderen");
+		print_submit_button("remove_student", "Verwijderen");
 	}
 ?>
 				</td>
@@ -133,38 +133,42 @@ function add_student($firstname, $lastname, $klas)
 	}
 }
 
-function update_student($number, $firstname, $lastname, $klas)
+function update_student($number, $firstname, $middlename, $lastname, $klas, $active = 1)
 {
 	global $database;
 	
-	$query  = "UPDATE leerlingen ";
+	$query  = "UPDATE leerling ";
 	$query .= "SET voornaam = :veld1, ";
-	$query .= "    achternaam = :veld2, ";
-	$query .= "    klas = :veld3 ";
-	$query .= "WHERE llnr = :veld0";
+	$query .= "    tussenvoegsel = :veld2a, ";
+	$query .= "    achternaam = :veld2b, ";
+	$query .= "    klas = :veld3, ";
+	$query .= "    actief = :veld4 ";
+	$query .= "WHERE nummer = :veld0";
 		
-	print "<!-- $query -->\n";
+	debug_log($query);
 
 	$data = [	
 		"veld0" => $number,
 		"veld1" => $firstname,
-		"veld2" => $lastname,
-		"veld3" => $klas
+		"veld2a" => $middlename,
+		"veld2b" => $lastname,
+		"veld3" => $klas,
+		"veld4" => $active
 	];
 	
 	try {
-		print "About to change student $number.";
+		debug_log("About to change student $number.");
 		$stmt = $database->prepare($query);
 		if ($stmt->execute($data)) 
 		{
-			print "Student successfully updated.";
+			debug_log("Student successfully updated.");
 		} 
 		else 
 		{
-			print "Database refused to update this student.";
+			debug_warning("Database refused to update this student.");
 		}
 	} catch (Exception $ex) {
-		print "ERROR: Failed to update student : ".$ex->getMessage();
+		debug_error("ERROR: Failed to update student : ", $ex);
 	}
 }
 

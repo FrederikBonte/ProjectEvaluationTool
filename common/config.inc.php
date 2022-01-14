@@ -2,7 +2,7 @@
 date_default_timezone_set('Europe/Amsterdam');
 
 // Connect to mysql on the localhost:3307, use the database "bibliotheek".
-$databaseConnectionString = "mysql:host=localhost;port=3306;dbname=projecten";
+$databaseConnectionString = "mysql:host=localhost;port=3306;dbname=projecten;charset=utf8";
 // Use this username.
 $username = "root";
 // And this password.
