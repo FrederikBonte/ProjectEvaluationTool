@@ -13,14 +13,16 @@ include "templates/header.txt";
 	//		Difficulty (1-5 stars)
 	// (ALL PROJECTS ALWAYS HAVE ONE MAIN GROUP with the same id, to keep things simple for now...)
 	//		List of criteria (empty first).
+	//   ENFORCE that in-use projects cannot be modified in any way. (Also adding new criteria will skew the original rewarding.)
 	// * Rename/edit an existing project...
 	// * NEVER EDIT A PROJECT THAT was already rewarded!!!
 	//   LEFT JOIN with beoordeling and check that MAX(leerlingnummer) is NULL!
-	// @TODO:
 	// * Manage the list of possible reward methods.
+	//   NEVER REMOVE methods that are bound to a criterium. (Would cause an error.)
+	//   ONLY un-awarded methods may still be changed (min/max value)
 	// * Manage the list of all possible criteria.
-	// * NEVER REMOVE CRITERIA THAT WERE ALREADY AWARDED TO STUDENTS!!!
-	//   Check that in-use projects cannot be modified in any way. (Also adding new criteria will skew the original rewarding.)
+	//   NEVER REMOVE CRITERIA THAT WERE ALREADY AWARDED TO STUDENTS!!!
+	// @TODO:
 	// * Create a new editable copy of a project for new classes.
 	//   Original project then always(?) becomes inactive.
 	// * Handle template projects (cannot be used to reward points, only as copy source.)
