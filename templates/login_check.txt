@@ -1,0 +1,10 @@
+<?php
+session_start();
+
+if (!array_key_exists("docent", $_SESSION))
+{
+	// User must first login.
+	header("Location: login.php");
+	exit();
+}
+?>

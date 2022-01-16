@@ -24,7 +24,8 @@ h3 {
 
 div#navbar 
 {
-	background-color: white;	
+	background-color: white;
+	padding: 2px;
 }
 
 div#navbar h1
@@ -33,6 +34,14 @@ div#navbar h1
 	color: lightblue;
 	text-shadow: 2px 2px 5px gray;
 	text-align: center;
+}
+
+div#navbar p
+{
+	width: 250px;	
+	padding: 10px;
+	color: black;
+	margin-left: auto;
 }
 
 div#navbar img

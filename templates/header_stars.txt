@@ -1,4 +1,13 @@
-<!DOCTYPE html>
+<?php
+session_start();
+
+if (!array_key_exists("docent", $_SESSION))
+{
+	// User must first login.
+	header("Location: login.php");
+	exit();
+}
+?><!DOCTYPE html>
 <html>
 <head>
 	<title>Project Evaluatie Tool</title>
@@ -37,13 +46,13 @@ function update_star_size(value) {
 <body>
 	<div id="navbar">
 		<h1>Project Evaluatie Tool</h1>
+		<p>Welkom <?=$_SESSION["name"]?><a href="logout.php"><img align="right" width="32" src="images/logout.png" /></a></p>
 		<ul>
 			<li><a href="index.php">Home</a></li>
 			<li><a href="beoordelen.php">Beoordelen</a></li>
-			<li><a href="klassen.php">Klassen en leerlingen</a></li>
+			<li><a href="klassen.php">Klassen &amp; leerlingen</a></li>
 			<li><a href="docenten.php">Docenten</a></li>
 			<li><a href="projecten.php">Projecten</a></li>
-			<li><a href="criteria.php">Criteria & methoden</a></li>
-			<li><a href="demo.php">Demo & Development</a></li>
+			<li><a href="criteria.php">Criteria</a></li>
 		</ul>
 	</div>

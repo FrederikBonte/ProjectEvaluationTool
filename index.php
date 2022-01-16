@@ -29,12 +29,15 @@ include "templates/header.txt";
 	// * Create a new editable copy of a project for new classes.
 	//   Original project then always(?) becomes inactive.
 	// * Handle template projects (cannot be used to reward points, only as copy source.)
+	// * Manage the list of classes.
 	// * Import students through xml.
 	// * Manage the list of teachers.
-	// * Manage the list of classes.
+	//   Add an actual login system.
+	//   Link Teachers to classes to make selecting students easier.
 	// * Choose who is teaching and select the required class.
 	// * Generate an "I talked to this student" screen. ("evaluatie")
 	// * Choose a project to reward for a student.
+	//   Only show projects that match the semester of the class?
 	// * Generate a project evaluation screen for the teacher.
 	// * Process the values entered by the teacher into the final "beoordeling" table.
 	// * Allow subgroups of criteria
