@@ -128,7 +128,7 @@ function print_edit_project_criterium($record)
 				<input type="hidden" name="crit_id" value="<?=$record["criteriumid"]?>" />
 				<td><?=$record["crit_naam"]?></td>
 				<td><?=$record["methode_naam"]?></td>
-				<td><input type="number" name="weight" step="0.1" value="<?=$record["gewicht"]?>" /></td>
+				<td><input type="number" name="weight" step="0.05" value="<?=$record["gewicht"]?>" /></td>
 				<td><?=$record["max"]?></td>
 				<td><input type="checkbox" name="autocalc" <?=$autocalc_checked?> /></td>
 				<td>
@@ -148,7 +148,7 @@ function print_add_project_criterium($project_id)
 				<input type="hidden" name="group_id" value="<?=$project_id?>" />
 				<td><?php print_select_criterium(); ?></td>
 				<td>...</td>
-				<td><input type="number" name="weight" step="0.1" value="1" /></td>
+				<td><input type="number" name="weight" step="0.05" value="1" /></td>
 				<td>...</td>
 				<td><input type="checkbox" name="autocalc" checked /></td>
 				<td>
@@ -167,7 +167,7 @@ function print_create_project_criterium($project_id)
 				<input type="hidden" name="group_id" value="<?=$project_id?>" />
 				<td><input type="text" name="crit_name" required /></td>
 				<td><?php print_select_method(); ?></td>
-				<td><input type="number" name="weight" step="0.1" value="1" /></td>
+				<td><input type="number" name="weight" step="0.05" value="1" /></td>
 				<td>...</td>
 				<td><input type="checkbox" name="autocalc" checked /></td>
 				<td>
