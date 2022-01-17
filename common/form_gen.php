@@ -39,9 +39,13 @@ function print_text_input($name, $value = null, $label = null)
 ?><?=$label?><input type="text" name="<?=$name?>" value="<?=$value?>" /><?php
 }
 
-function print_hidden_input($name, $value)
+function print_hidden_input($name, $value, $show = false)
 {
 ?><input type="hidden" name="<?=$name?>" value="<?=$value?>" /><?php
+	if ($show)
+	{
+		echo $value;
+	}
 }
 
 function print_submit_button($name, $value)
@@ -53,6 +57,13 @@ function print_checkbox($name, $value = false)
 {
 	$checked = $value?"checked":"";
 ?><input type="checkbox" name="<?=$name?>" <?=$checked?> /><?php
+}
+
+function print_rand_check()
+{
+$rand=rand();
+$_SESSION['rand']=$rand;
+print_hidden_input("randcheck", $rand);
 }
 
 ?>

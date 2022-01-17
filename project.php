@@ -29,6 +29,22 @@ else if (array_key_exists("update_project", $_REQUEST))
 	update_project($project_id, $name, $description, $semester, $stars);
 	$edit = true;
 }
+else if (array_key_exists("copy_project", $_REQUEST)) 
+{
+	$rand1 = $_REQUEST["randcheck"];
+	$rand2 = $_SESSION["rand"];
+	$project_id = $_REQUEST["project_id"];
+	if ($rand1==$rand2)
+	{
+		unset($_SESSION["rand"]);
+		$project_id = copy_project($project_id);
+		$edit = true;
+	}
+	else
+	{
+		debug_warning("Resubmit detected and avoided.");
+	}
+}
 else if (array_key_exists("add_crit", $_REQUEST)) 
 {
 	$group_id = $_REQUEST["group_id"];
@@ -80,6 +96,7 @@ if (isset($project_id))
 	{
 		// View the project with all its criteria.
 		print_project_long($project_id);
+		print_copy_project_form($project_id);
 	}	
 }
 else

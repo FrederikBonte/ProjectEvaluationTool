@@ -1,6 +1,7 @@
 <?php
 require_once "common/config.inc.php";
 require_once "common/debug.php";
+require_once "common/form_gen.php";
 require_once "common/criteria.php";
 
 function print_select_project($selected_id = null, $label = null) 
@@ -40,6 +41,7 @@ function print_active_projects()
 	
 	$query  = 	"SELECT project.id, project.naam, project.omschrijving, project.semester, project.sterren, project.actief, project.blauwdruk, (MAX(leerlingnummer) IS NOT NULL) as gebruikt ".
 				"FROM project LEFT JOIN beoordeling ON groepid=project.id ".
+				"WHERE project.actief=1 ".
 				"GROUP BY project.id, project.naam, project.omschrijving, project.semester, project.sterren, project.actief, project.blauwdruk";
 	debug_log($query);
 ?>
@@ -83,6 +85,20 @@ function print_project_short($record)
 ?></td>
 		<td><?=$description?></td>
 	</tr>
+	</form>
+<?php
+}
+
+function print_copy_project_form($project_id)
+{
+?>
+	<h3>Maak een nieuwe bewerkbare versie van dit project</h3>
+	<form>
+<?php
+	print_rand_check();
+	print_hidden_input("project_id", $project_id);
+	print_submit_button("copy_project", "Kopieren");
+?>	
 	</form>
 <?php
 }
@@ -369,4 +385,109 @@ function update_project($id, $name, $description, $semester, $stars)
 		debug_error("Failed to update project because ", $ex);
 	}
 }
+
+function copy_project($original_id)
+{
+	$new_id = copy_project_name($original_id);
+	if (isset($new_id)) {
+		set_project_active($original_id, false);	
+		copy_project_criteria($original_id, $new_id);
+		return $new_id;
+	}
+}
+
+function copy_project_name($original_id)
+{
+	global $database;
+	
+	$query  = "INSERT INTO project (naam, semester, sterren, omschrijving) ";
+	$query .= "(SELECT concat('Kopie van ',naam) as naam, semester, sterren, omschrijving FROM project WHERE id=:veld0)";
+		
+	debug_log($query);
+
+	$data = [	
+		"veld0" => $original_id
+	];
+	
+	try {
+		debug_log("About to copy project $original_id...");
+		$stmt = $database->prepare($query);
+		if ($stmt->execute($data)) 
+		{
+			$id = $database->lastInsertId();
+			add_group($id);
+			debug_log("Project successfully copied.");
+			return $id;			
+		} 
+		else 
+		{
+			debug_warning("Database refused to copy project.");
+		}
+	} catch (Exception $ex) {
+		debug_error("Failed to copy project because ", $ex);
+	}	
+}
+
+function copy_project_criteria($source_id, $target_id)
+{
+	global $database;
+	
+	$query  = "INSERT INTO project_criterium ";
+	$query .= "(SELECT :veld1 as groepid, criteriumid, actief, gewicht, autocalc FROM project_criterium WHERE groepid=:veld0)";
+		
+	debug_log($query);
+
+	$data = [	
+		"veld0" => $source_id,
+		"veld1" => $target_id
+	];
+	
+	try {
+		debug_log("About to fill project $target_id with the criteria of project $source_id...");
+		$stmt = $database->prepare($query);
+		if ($stmt->execute($data)) 
+		{
+			debug_log($stmt->rowCount()." project criteria successfully copied.");
+		} 
+		else 
+		{
+			debug_warning("Database refused to copy project criteria");
+		}
+	} catch (Exception $ex) {
+		debug_error("Failed to copy project criteria because ", $ex);
+	}	
+}
+
+function set_project_active($id, $active = false)
+{
+	global $database;
+	
+	$active_value = ($active)?1:0;
+	$query  = "UPDATE project ";
+	$query .= "SET actief = :veld1 ";
+	$query .= "WHERE id = :veld0";
+		
+	debug_log($query);
+
+	$data = [	
+		"veld0" => $id,
+		"veld1" => $active_value
+	];
+	
+	try {
+		debug_log("About to change active value for project $id.");
+		$stmt = $database->prepare($query);
+		if ($stmt->execute($data)) 
+		{
+			debug_log("Project successfully updated.");
+		} 
+		else 
+		{
+			debug_warning("Database refused to update this project.");
+		}
+	} catch (Exception $ex) {
+		debug_error("Failed to update project because ", $ex);
+	}	
+}
+
 ?>

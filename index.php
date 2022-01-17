@@ -25,9 +25,10 @@ include "templates/header.txt";
 	// * Manage the list of students.
 	// * Import students from CSV.
 	// * Export students to CSV and XML.
-	// @TODO:
 	// * Create a new editable copy of a project for new classes.
 	//   Original project then always(?) becomes inactive.
+	//   Simple revisit avoids resubmit value...
+	// @TODO:
 	// * Handle template projects (cannot be used to reward points, only as copy source.)
 	// * Manage the list of classes.
 	// * Import students through xml.
