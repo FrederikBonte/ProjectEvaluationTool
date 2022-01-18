@@ -31,9 +31,10 @@ else if (array_key_exists("update_project", $_REQUEST))
 }
 else if (array_key_exists("copy_project", $_REQUEST)) 
 {
-	$rand1 = $_REQUEST["randcheck"];
-	$rand2 = $_SESSION["rand"];
 	$project_id = $_REQUEST["project_id"];
+
+	$rand1 = $_REQUEST["randcheck"];
+	$rand2 = array_key_exists("rand", $_SESSION)?$_SESSION["rand"]:-1;
 	if ($rand1==$rand2)
 	{
 		unset($_SESSION["rand"]);

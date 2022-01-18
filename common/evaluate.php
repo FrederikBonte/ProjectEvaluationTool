@@ -74,13 +74,14 @@ function print_project_evaluation_criteria($project_id)
 				<td><?=$record["crit_omschrijving"]?></td>
 				<td><?php debug_log($record["methode_naam"]); print_evaluate_method($record["criteriumid"], $record["methodeid"], $record["methode_min"], $record["methode_max"]) ?></td>
 			</tr>
-<?php
+<?php				
+				print_rand_check();
 			}
 ?>
+			<tr><td>Opslaan</td><td></td><td><?php print_submit_button("evaluate_project", "Opslaan"); ?></td></tr>
 			</table>
 			</form>
 <?php
-			print_submit_button("evaluate_project", "Opslaan");
 		} 
 		else 
 		{
