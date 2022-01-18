@@ -131,6 +131,9 @@ function print_project_long($project_id)
 			<p>
 				<?=$row["omschrijving"]?>
 			</p>
+			<p>
+				<a href="beoordelen.php?id=<?=$project_id?>&example">Toon voorbeeld pagina</a>
+			</p>
 <?php
 			print_project_criteria($project_id);
 		} 
@@ -200,27 +203,6 @@ function print_project_criteria($project_id)
 	}
 }
 
-function print_stars($checked, $field = null)
-{
-	$js = "";
-	echo "<span onmouseleave=\"update_star_size(0)\">";
-	for ($i=0;$i<5;$i++) 
-	{
-		if ($field) {
-			$value = $i+1;
-			$js = "onmouseover=\"update_star_size($value)\" onclick=\"update_star('$field', $value)\" name=\"sterretje_$value\"";
-		}
-		$yellow = "";
-		if ($i<$checked) 
-		{
-			$yellow = "checked";
-		}
-		
-		echo "<span class=\"fa fa-star $yellow\" $js></span>\n\r";			
-	}
-	echo "</span>";
-}
-
 function print_add_project_form()
 {
 ?>
@@ -269,6 +251,9 @@ function print_edit_project_form($project_id)
 			<textarea name="description" rows="4" cols="50"><?=$row["omschrijving"]?></textarea><br />
 			<button type="submit" name="update_project">Wijzigen</button>
 			</form>
+			<p>
+				<a href="beoordelen.php?id=<?=$project_id?>&example">Toon voorbeeld pagina</a>
+			</p>
 <?php
 			print_edit_project_criteria($project_id);
 		} 

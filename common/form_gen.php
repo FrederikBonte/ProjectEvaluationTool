@@ -48,6 +48,13 @@ function print_hidden_input($name, $value, $show = false)
 	}
 }
 
+function print_number_input($name, $min, $max, $value = null, $label = null)
+{
+	// When the value is null, don't actually add a value="" to the field.
+	$value_disp = $value?" value=\"$value\" ":"";
+?><?=$label?><input type="number" name="<?=$name?>" min="<?=$min?>" max="<?=$max?>" <?=$value_disp?> /><?php
+}
+
 function print_submit_button($name, $value)
 {
 ?><button type="submit" name="<?=$name?>"><?=$value?></button><?php	
@@ -66,4 +73,24 @@ $_SESSION['rand']=$rand;
 print_hidden_input("randcheck", $rand);
 }
 
+function print_stars($checked, $field = null)
+{
+	$js = "";
+	echo "<span onmouseleave=\"update_star_size(0)\">";
+	for ($i=0;$i<5;$i++) 
+	{
+		if ($field) {
+			$value = $i+1;
+			$js = "onmouseover=\"update_star_size($value)\" onclick=\"update_star('$field', $value)\" name=\"sterretje_$value\"";
+		}
+		$yellow = "";
+		if ($i<$checked) 
+		{
+			$yellow = "checked";
+		}
+		
+		echo "<span class=\"fa fa-star $yellow\" $js></span>\n\r";			
+	}
+	echo "</span>";
+}
 ?>
