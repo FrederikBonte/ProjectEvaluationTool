@@ -30,15 +30,17 @@ function print_select_klas_form($selected_id = null)
 		"klas", 
 		"Kies een klas", 
 		$selected_id, 
-		"Kies een klas om te beoordelen : ", 
+		"Klas : ", 
 		$javascript);
 ?><br />
-		Kies een student om te beoordelen : <select name="student" id="students">
+		Student : <select name="student" id="students">
 			<option value="-1" selected disabled>Kies een student</option>
 		</select><br />
 <?php
 		// @TODO: Only show projects linked to this klas. But for now there aren't that many...
-		print_select_project(null, "Kies een project om te beoordelen : ");
+		print_select_project(null, "Project : ");
+		echo "<br />";
+		print_submit_button("start_evaluate", "Project beoordelen");
 ?>	
 	</form>
 <?php

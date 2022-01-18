@@ -14,12 +14,12 @@ function process()
 	var students = JSON.parse(this.responseText).leerlingen;
 	console.log("Received data for "+students.length+" student(s).");
 
+	// Retrieve all table rows.
+	options = $("#students").children();		
 
 	// Loop through all the elements.
-	for (i = 0; i < students.length; i++) 
+	for (i = students.length-1; i >= 0; i--) 
 	{
-		// Retrieve all table rows.
-		options = $("#students").children();		
 		console.log("Table has "+options.length+" rows.");
 		// Add student after the last row.
 		addStudent(options, students[i]);
@@ -49,5 +49,5 @@ function addStudent(options, student)
 	}	
 		
 	new_option = $("<option value=\""+ student.nummer +"\">"+name+"</option>");
-	options.append(new_option);	
+	options.after(new_option);	
 }
