@@ -7,7 +7,7 @@ require_once "common/criteria.php";
 function print_select_project($selected_id = null, $label = null) 
 {
 	global $database;
-	$query = "SELECT id, naam FROM project";	
+	$query = "SELECT id, naam FROM project WHERE actief=1";	
 	debug_log($query);
 ?>
 		<?=$label?><select name="project">

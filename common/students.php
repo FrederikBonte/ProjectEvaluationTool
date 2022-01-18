@@ -164,7 +164,7 @@ global $database;
 				}
 ?>
 		
-		<achternaam><?=$firstname?></achternaam>
+		<achternaam><?=$lastname?></achternaam>
 	</leerling>
 <?php
 			}
@@ -179,6 +179,64 @@ global $database;
 	}	
 }
 
+function export_students_json($klas_id)
+{
+global $database;
+	$query = "SELECT * ".
+			"FROM leerling ".
+			"WHERE klas=? and actief=1 ".
+			"ORDER BY achternaam, voornaam";
+	try {
+		$stmt = $database->prepare($query);
+		if ($stmt->execute([$klas_id])) 
+		{
+			$first = true;
+?>
+{
+	"leerlingen" : [
+<?php
+			foreach ($stmt as $record) 	{
+				$number = $record["nummer"];
+				$firstname = $record["voornaam"];
+				$middle = $record["tussenvoegsel"];
+				$lastname = $record["achternaam"];
+				if ($first)
+				{
+					$first = false;
+				}
+				else
+				{
+					echo ",\n";
+				}
+?>
+		{
+			"nummer" : "<?=$number?>",
+			"voornaam" : "<?=$firstname?>",
+<?php
+				if ($middle && strlen(trim($middle))>0)
+				{
+?>
+			"tussenvoegsel" : "<?=$middle?>",
+<?php
+				}
+?>
+			"achternaam" : "<?=$lastname?>"
+		}<?php
+			}
+			echo "\n";
+?>
+	]
+}
+<?php
+		} 
+		else 
+		{
+			debug_warning("Database refused to read students.");
+		}
+	} catch (Exception $ex) {
+		debug_error("ERROR: Failed to load students : ", $ex);
+	}	
+}
 // BELOW ARE ALL THE FUNCTIONS THAT manipulate the database.
 
 function import_students_csv($klas_id, $filename)

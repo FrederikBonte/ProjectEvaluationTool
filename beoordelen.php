@@ -3,6 +3,9 @@ require_once "common/criteria.php";
 require_once "common/projects.php";
 require_once "common/evaluate.php";
 include "templates/header_stars.txt";
+?>
+	<script type="text/javascript" src="js/load_klas.js"></script>
+<?php
 	
 if (array_key_exists("evaluate_project", $_REQUEST))
 {	
@@ -27,7 +30,17 @@ else if (array_key_exists("id", $_REQUEST)) {
 <?php		
 		print_project_evaluation_form($project_id);
 	}
-}
+} 
+else
+{
+//	$data = array(
+//		"mijn.data" => "blurp"
+//	);
+//	
+//	echo $data["mijn.data"];
+	
+	print_select_klas_form();
+}	
 ?>
 </body>
 </html>

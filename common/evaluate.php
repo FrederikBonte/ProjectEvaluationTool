@@ -2,6 +2,47 @@
 require_once "common/config.inc.php";
 require_once "common/debug.php";
 require_once "common/form_gen.php";
+require_once "common/projects.php";
+
+function print_select_klas($docent_id, $selected_id = null, $label = null, $javascript) 
+{
+	$query = 	"SELECT code as id, omschrijving as value ".
+				"FROM klas, docent_klas ".
+				"WHERE actief=1 AND klas.code=klascode AND docentcode='$docent_id'".
+				"ORDER BY jaar";	
+	print_select($query, "klas", "Kies een klas", $selected_id, $label, $javascript);
+}
+
+function print_select_klas_form($selected_id = null)
+{
+?>
+	<h3>Selecteer een klas om te beoordelen</h3>
+	<form>
+<?php
+	// This is now an SQL insert failure, but with only 5 chars... we should be safe.
+	$docentcode = substr($_SESSION["docent"],0,5);	
+	$query = 	"SELECT code as id, omschrijving as value ".
+				"FROM klas, docent_klas ".
+				"WHERE actief=1 AND klas.code=klascode AND docentcode='$docentcode' ".
+				"ORDER BY jaar";	
+	$javascript = "load_klas(this.options[this.selectedIndex].value);";
+	print_select($query, 
+		"klas", 
+		"Kies een klas", 
+		$selected_id, 
+		"Kies een klas om te beoordelen : ", 
+		$javascript);
+?><br />
+		Kies een student om te beoordelen : <select name="student" id="students">
+			<option value="-1" selected disabled>Kies een student</option>
+		</select><br />
+<?php
+		// @TODO: Only show projects linked to this klas. But for now there aren't that many...
+		print_select_project(null, "Kies een project om te beoordelen : ");
+?>	
+	</form>
+<?php
+}
 
 function print_project_evaluation_form($project_id, $student_number = null)
 {

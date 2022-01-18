@@ -4,12 +4,12 @@ require_once "common/debug.php";
 
 /// FUNCTIONS that are useful for generating forms.
 
-function print_select($query, $name, $message, $selected_id = null, $label = null) 
+function print_select($query, $name, $message, $selected_id = null, $label = null, $javascript = null) 
 {
 	global $database;
 	debug_log($query);
 ?>
-		<?=$label?><select name="<?=$name?>">
+		<?=$label?><select name="<?=$name?>" onchange="<?=$javascript?>">
 		<option value="-1" disabled selected><?=$message?></option>
 <?php
 	// Send the query to the database server.
