@@ -41,9 +41,61 @@ function print_select_klas_form($selected_id = null)
 		print_select_project(null, "Project : ");
 		echo "<br />";
 		print_submit_button("start_evaluate", "Project beoordelen");
+		echo "<br />";
+		print_submit_button("start_coach", "Student coachen");
 ?>	
 	</form>
 <?php
+}
+
+function print_coach_student_form($student_id)
+{
+	print_student_form_header($student_id);
+?>
+	<p><span id="timer">0:00</span></p>
+	<form>
+<?php
+	print_rand_check();
+	print_hidden_time("seconds");
+	print_hidden_input("student", $student_id);
+	print_hidden_time("tijd");
+	// @TODO: Print start second since 1970? or something...
+?>		
+	<textarea name="conversation" cols="50" rows="4" placeholder="Type hier uw evaluatie tekst. Wat gaat er goed? Waar heb je hulp bij nodig? Is gelukt wat je vorige week hebt beloofd?"></textarea><br />
+<?php
+	print_submit_button("evaluate_student", "Opslaan");
+?>
+	</form>
+	<script type="text/javascript" src="js/timer.js"></script>
+<?php
+}
+
+function print_student_form_header($student_id)
+{
+	global $database;
+	$query = "SELECT concat_ws(\" \", voornaam, tussenvoegsel, achternaam) as naam, klas FROM leerling WHERE nummer = :id";	
+	print "<!-- $query -->\n";
+	$data = [
+		"id" => $student_id
+	];
+	
+	try {
+		$stmt = $database->prepare($query);
+		if ($stmt->execute($data)) 
+		{
+			// Actually read the record.
+			$row = $stmt->fetch(PDO::FETCH_ASSOC);
+?>
+			<h2>Evaluatie <?=$row["naam"]?> (<?=$row["klas"]?>)</h2>
+<?php
+		} 
+		else 
+		{
+			debug_warning("Database refused to read student information.");
+		}
+	} catch (Exception $ex) {
+		debug_error("ERROR: Failed to load student : ", $ex);
+	}	
 }
 
 function print_project_evaluation_form($project_id, $student_number = null)
@@ -75,7 +127,7 @@ function print_project_evaluation_form($project_id, $student_number = null)
 				<?=$row["omschrijving"]?>
 			</p>
 <?php
-			print_project_evaluation_criteria($project_id);
+			print_project_evaluation_criteria($project_id, $student_number);
 		} 
 		else 
 		{
@@ -86,7 +138,7 @@ function print_project_evaluation_form($project_id, $student_number = null)
 	}
 }
 
-function print_project_evaluation_criteria($project_id) 
+function print_project_evaluation_criteria($project_id, $student_number) 
 {
 	global $database;
 	$query = "SELECT criteriumid, gewicht, ROUND(m.max*gewicht,2) as max, c.naam as crit_naam, c.omschrijving as crit_omschrijving, pc.autocalc, methodeid, m.naam as methode_naam, m.min as methode_min, m.max as methode_max, m.omschrijving as methode_omschrijving ".
@@ -110,6 +162,7 @@ function print_project_evaluation_criteria($project_id)
 				<th>Beoordeling</th>
 			</tr>
 <?php
+
 			foreach ($stmt as $record) 	{
 ?>
 			<tr>
@@ -118,8 +171,9 @@ function print_project_evaluation_criteria($project_id)
 				<td><?php debug_log($record["methode_naam"]); print_evaluate_method($record["criteriumid"], $record["methodeid"], $record["methode_min"], $record["methode_max"]) ?></td>
 			</tr>
 <?php				
-				print_rand_check();
 			}
+			print_hidden_input("student", $student_number);
+			print_rand_check();
 ?>
 			<tr><td>Opslaan</td><td></td><td><?php print_submit_button("evaluate_project", "Opslaan"); ?></td></tr>
 			</table>
@@ -207,4 +261,38 @@ function print_evaluate_bias($crit_id, $value = 1)
 
 /// BELOW are the actual database manipulation functions for projects.
 
+function add_student_evalution($student_id, $time, $text)
+{
+	global $database;
+	
+	$query  = "INSERT INTO evaluatie (docentcode, leerlingnummer, datum, tijd, notitie) ";
+	$query .= "VALUES (:veld1, :veld2, CURRENT_DATE(), :veld3, :veld4)";	
+	
+	debug_log($query);
+
+	$data = [
+		"veld1" => $_SESSION["docent"],
+		"veld2" => $student_id,
+		"veld3" => "00:".$time, // Format to hours not just minutes...
+		"veld4" => $text
+	];
+	
+	try 
+	{
+		debug_log("About to add new student evaluation.");
+		$stmt = $database->prepare($query);
+		if ($stmt->execute($data)) 
+		{
+			debug_log("Evaluation successfully added.");
+		} 
+		else 
+		{
+			print_warning("Database refused to add new student evaluation.");
+		}
+	} 
+	catch (Exception $ex) 
+	{
+		debug_error("Failed to add new student evaluation because ", $ex);
+	}
+}
 ?>

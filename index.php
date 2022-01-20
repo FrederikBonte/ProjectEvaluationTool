@@ -17,6 +17,7 @@ include "templates/header.txt";
 	// * Rename/edit an existing project...
 	// * NEVER EDIT A PROJECT THAT was already rewarded!!!
 	//   LEFT JOIN with beoordeling and check that MAX(leerlingnummer) is NULL!
+	// * Teachers must now login to ensure safety also added credentials to the rocvantwente.frederikbonte.nl site in preparation.
 	// * Manage the list of possible reward methods.
 	//   NEVER REMOVE methods that are bound to a criterium. (Would cause an error.)
 	//   ONLY un-awarded methods may still be changed (min/max value)
@@ -28,18 +29,18 @@ include "templates/header.txt";
 	// * Create a new editable copy of a project for new classes.
 	//   Original project then always(?) becomes inactive.
 	//   Simple revisit avoids resubmit value...
+	// * Generate an "I talked to this student" screen. ("evaluatie")
+	// * Choose who is teaching and select the required class.
+	//   No longer needed because of login system.
+	// * Generate a project evaluation screen for the teacher.
 	// @TODO:
 	// * Handle template projects (cannot be used to reward points, only as copy source.)
 	// * Manage the list of classes.
 	// * Import students through xml.
 	// * Manage the list of teachers.
-	//   Add an actual login system.
 	//   Link Teachers to classes to make selecting students easier.
-	// * Choose who is teaching and select the required class.
-	// * Generate an "I talked to this student" screen. ("evaluatie")
 	// * Choose a project to reward for a student.
 	//   Only show projects that match the semester of the class?
-	// * Generate a project evaluation screen for the teacher.
 	// * Process the values entered by the teacher into the final "beoordeling" table.
 	// * Allow subgroups of criteria
 	//    For instance two sub groups, and the main group calculates the average of those.

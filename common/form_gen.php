@@ -48,6 +48,11 @@ function print_hidden_input($name, $value, $show = false)
 	}
 }
 
+function print_hidden_time($name)
+{
+?><input type="hidden" name="<?=$name?>" id="<?=$name?>" value="0" /><?php
+}
+
 function print_number_input($name, $min, $max, $value = null, $label = null)
 {
 	// When the value is null, don't actually add a value="" to the field.
