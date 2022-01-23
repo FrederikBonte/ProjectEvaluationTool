@@ -38,6 +38,8 @@ include "templates/header.txt";
 	// * Manage the list of classes.
 	// * Import students through xml.
 	// * Manage the list of teachers.
+	//   Allow teachers to change their password.
+	//   Allow teachers to choose a new username.
 	//   Link Teachers to classes to make selecting students easier.
 	// * Choose a project to reward for a student.
 	//   Only show projects that match the semester of the class?
@@ -46,7 +48,7 @@ include "templates/header.txt";
 	//    For instance two sub groups, and the main group calculates the average of those.
 	//    Multiple rewards, only the highest is taken into account.
     //    Implement all the possible group calculations: sum, min, max, average and for now... Other...
-	
+	// * Handle some form of help for all the pages.
 ?>
 </body>
 </html>
