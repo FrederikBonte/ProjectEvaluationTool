@@ -7,6 +7,7 @@ if (array_key_exists("add_project", $_REQUEST)) {
 	$semester = $_REQUEST["semester"];
 	$stars = $_REQUEST["stars"];
 	$description = $_REQUEST["description"];
+	// @TODO: Security check create role.
 	$project_id = add_project($name, $description, $semester, $stars);
 }
 else if (array_key_exists("update_project", $_REQUEST)) {
@@ -15,6 +16,7 @@ else if (array_key_exists("update_project", $_REQUEST)) {
 	$semester = $_REQUEST["semester"];
 	$stars = $_REQUEST["stars"];
 	$description = $_REQUEST["description"];
+	// @TODO: Security check edit role.
 	update_project($project_id, $name, $description, $semester, $stars);
 }
 else if (array_key_exists("copy_project", $_REQUEST)) {
@@ -23,11 +25,19 @@ else if (array_key_exists("copy_project", $_REQUEST)) {
 	$semester = $_REQUEST["semester"];
 	$stars = $_REQUEST["stars"];
 	$description = $_REQUEST["description"];
+	// @TODO: Security check edit role.
 	copy_project($project_id, $name, $description, $semester, $stars);
 }
 
-print_active_projects();
-print_add_project_form();
+if (can_view("project"))
+{
+	print_active_projects();
+}
+
+if (can_create("project"))
+{
+	print_add_project_form();
+}
 ?>
 </body>
 </html>

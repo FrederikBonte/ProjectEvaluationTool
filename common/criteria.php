@@ -178,7 +178,7 @@ function print_create_project_criterium($project_id)
 <?php
 }
 
-function print_all_criteria()
+function print_all_criteria($can_edit = false)
 {
 	global $database;
 	$query = 	"SELECT criterium.*, beoordeling_methode.naam as methode_naam, (MAX(leerlingnummer) IS NOT NULL) as in_gebruik ".
@@ -204,14 +204,32 @@ function print_all_criteria()
 				<th>Omschrijving</th>
 				<th>Methode</th>
 				<th>Meerekenen</th>
+<?php
+			if ($can_edit)
+			{
+?>
 				<th>Actie</th>
+<?php
+			}
+?>
+	
 			</tr>
 <?php
 			foreach ($stmt as $record) 	{
 				// For instance, we don't assume the student will get the maximum of negative points!
-				print_edit_criterium($record);
+				if ($can_edit)
+				{
+					print_edit_criterium($record);
+				}
+				else 
+				{
+					print_criterium_tr($record);
+				}
 			}
-			print_add_criterium();
+			if (can_create("criterium"))
+			{
+				print_add_criterium();
+			}
 ?>
 			</table>
 <?php
@@ -271,6 +289,21 @@ function print_edit_criterium($record)
 <?php
 }
 
+function print_criterium_tr($record)
+{
+	$autocalc_checked = ($record["autocalc"]==1)?"ja":"<i>nee</i>";
+	$editable = $record["in_gebruik"]==0;
+	//debug_dump($record);
+?>
+			<tr>
+				<td><?=$record["naam"]?></td>
+				<td><?=$record["omschrijving"]?></td>
+				<td><?=$record["methode_naam"]?></td>			
+				<td><?=$autocalc_checked?></td>
+			</tr>
+<?php
+}
+
 function print_add_criterium()
 {
 ?>
@@ -288,7 +321,7 @@ function print_add_criterium()
 <?php
 }
 
-function print_all_methods()
+function print_all_methods($can_edit)
 {
 	global $database;
 	$query = 	"SELECT beoordeling_methode.*, (MAX(leerlingnummer) IS NOT NULL) as in_gebruik, (MAX(criterium.id) IS NOT NULL) as verbonden ".
@@ -314,14 +347,31 @@ function print_all_methods()
 				<th>Omschrijving</th>
 				<th>Min</th>
 				<th>Max</th>
+<?php
+			if ($can_edit)
+			{
+?>
 				<th>Actie</th>
+<?php
+			}
+?>
 			</tr>
 <?php
 			foreach ($stmt as $record) 	{
-				// For instance, we don't assume the student will get the maximum of negative points!
-				print_edit_method($record);
+				if ($can_edit)
+				{
+					// For instance, we don't assume the student will get the maximum of negative points!
+					print_edit_method($record);
+				}
+				else
+				{
+					print_method_tr($record);
+				}
 			}
-			print_add_method();
+			if (can_create("method"))
+			{
+				print_add_method();
+			}
 ?>
 			</table>
 <?php
@@ -378,6 +428,18 @@ function print_edit_method($record)
 ?>
 				</td>
 			</form>
+			</tr>
+<?php
+}
+
+function print_method_tr($record)
+{
+?>
+			<tr>
+				<td><?=$record["naam"]?></td>
+				<td><?=$record["omschrijving"]?></td>
+				<td><?=$record["min"]?></td>
+				<td><?=$record["max"]?></td>
 			</tr>
 <?php
 }

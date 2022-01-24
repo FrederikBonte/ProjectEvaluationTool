@@ -33,20 +33,38 @@ else if (array_key_exists("id", $_REQUEST)) {
 }
 else if (array_key_exists("start_evaluate", $_REQUEST))
 {
+	if (array_key_exists("student", $_REQUEST) && array_key_exists("project", $_REQUEST))
+	{
 ?>
-	<h2>Start project evaluatie voor een student</h2>	
+	<h2>Start project evaluatie voor een student</h2>		
 <?php
-	debug_dump($_REQUEST);
-	$student_id = $_REQUEST["student"];
-	$project_id = $_REQUEST["project"];
-	// @TODO: CHECK legal student and project.
-	print_project_evaluation_form($project_id, $student_id);
+//		debug_dump($_REQUEST);
+		$student_id = $_REQUEST["student"];
+		$project_id = $_REQUEST["project"];
+		// @TODO: CHECK legal student and project.
+		print_project_evaluation_form($project_id, $student_id);
+	}
+	else
+	{
+?>
+	<h2>Selecteer een project en een student om te evalueren</h2>
+<?php
+	}
 }
 else if (array_key_exists("start_coach", $_REQUEST))
 {
-	$student_id = $_REQUEST["student"];
-//	debug_dump($_REQUEST);
-	print_coach_student_form($student_id);
+	if (array_key_exists("student", $_REQUEST))
+	{
+		$student_id = $_REQUEST["student"];
+	//	debug_dump($_REQUEST);
+		print_coach_student_form($student_id);
+	}
+	else
+	{
+?>
+	<h2>Selecteer een student om te coachen</h2>
+<?php
+	}
 }
 else if (array_key_exists("evaluate_student", $_REQUEST))
 {

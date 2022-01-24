@@ -45,9 +45,8 @@ else if (array_key_exists("remove_crit", $_REQUEST))
 	remove_criterium($_REQUEST["crit_id"]);
 }
 
-
-print_all_criteria();
-print_all_methods();
+print_all_criteria(can_edit("criteria"));
+print_all_methods(can_edit("methods"));
 ?>
 </body>
 </html>

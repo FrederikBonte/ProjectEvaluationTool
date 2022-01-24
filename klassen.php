@@ -42,6 +42,9 @@ else if (array_key_exists("import", $_REQUEST))
 	
 //print_select_klas();
 //print_select_student("0SV1");
+
+$can_edit = can_edit("klas");
+$can_view = can_view("klas");
 ?>
 <br/>
 <h3>Klas bewerken</h3>
@@ -55,7 +58,9 @@ if (array_key_exists("klas", $_REQUEST))
 
 print_select_any_klas($klas_id, "Toon deze klas : ");
 print_submit_button("show", "Tonen");
-echo "<br />";
+if ($can_edit)
+{
+	echo "<br />";
 ?>
 <input type="file" name="students" />
 <?php
@@ -63,6 +68,11 @@ print_submit_button("import", "Importeren");
 
 ?>
 </form>
+<?php
+}
+if ($can_view)
+{
+?>
 <h3>Exporteren</h3>
 <form method="POST" action="export_students.php">
 <?php
@@ -70,9 +80,17 @@ print_select_any_klas($klas_id, "Exporteer deze klas : ");
 print_submit_button("xml", "XML");
 print_submit_button("csv", "CSV");
 ?>
-</form
+</form>
 <?php
-print_edit_students($klas_id);
+}
+if ($can_edit)
+{
+	print_edit_students($klas_id);
+}
+else if ($can_view)
+{
+	print_list_students($klas_id);
+}
 ?>
 </body>
 </html>

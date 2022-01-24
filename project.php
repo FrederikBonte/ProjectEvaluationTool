@@ -4,6 +4,7 @@ require_once "common/projects.php";
 include "templates/header_stars.txt";
 	
 $edit = false;
+$can_create = can_create("project");
 if (array_key_exists("id", $_REQUEST)) {
 	$project_id = $_REQUEST["id"];
 	if (array_key_exists("edit", $_REQUEST))
@@ -88,25 +89,37 @@ else if (array_key_exists("create_crit", $_REQUEST))
 
 if (isset($project_id))
 {
-	if ($edit)
+	if ($edit and can_edit("project"))
 	{
 		// Print the forms for editing the current project.
 		print_edit_project_form($project_id);
 	}
-	else
+	else if (can_view("project"))
 	{
 		// View the project with all its criteria.
 		print_project_long($project_id);
-		print_copy_project_form($project_id);
+		if ($can_create)
+		{
+			print_copy_project_form($project_id);
+		}
 	}	
+	else
+	{
+?>
+	<h2>
+<?php
+	}
 }
-else
+else if ($can_create)
 {
 	// Apparently the user got here without a specific project to view or edit...
 	// Simply provide the "Do you want to make a project?" form. #frozen
 	print_add_project_form();
 }
-
+else
+{
+	header("Location: projecten.php");
+}
 ?>
 </body>
 </html>

@@ -71,6 +71,57 @@ function print_edit_students($klas_id = null)
 	}	
 }
 
+function print_list_students($klas_id = null)
+{
+	global $database;
+	$query = "SELECT leerling.*, ((MAX(beoordeling.datum) IS NOT NULL) OR (MAX(evaluatie.datum) IS NOT NULL)) as beoordeeld ".
+			"FROM leerling ".
+			"LEFT JOIN beoordeling ON beoordeling.leerlingnummer = leerling.nummer ".
+			"LEFT JOIN evaluatie ON evaluatie.leerlingnummer = leerling.nummer ".
+			(($klas_id==null)?"":"WHERE klas='$klas_id' ").
+			"GROUP BY leerling.nummer, leerling.voornaam, leerling.tussenvoegsel, leerling.achternaam, leerling.klas, leerling.actief ".
+			"ORDER BY achternaam, voornaam";
+	debug_log($query);
+	
+	try {
+		$stmt = $database->prepare($query);
+		if ($stmt->execute()) 
+		{
+?>
+			<h2>Studenten</h2>
+			<table>
+			<tr>
+				<th>Naam</th>
+				<th>Tussenvoegsel</th>
+				<th>Achternaam</th>
+				<th>Klas</th>
+				<th>Actief</th>
+			</tr>
+<?php
+			foreach ($stmt as $record) 	{
+?>
+			<tr>
+				<td><?=mb_convert_encoding($record["voornaam"], "utf8")?></td>
+				<td><?=mb_convert_encoding($record["tussenvoegsel"], "utf8")?></td>
+				<td><?=mb_convert_encoding($record["achternaam"], "utf8")?></td>
+				<td><?=$record["klas"]?></td>
+				<td>&nbsp;<?=($record["actief"]==1)?"ja":"<i>nee</i>"?></td>
+			</tr>
+<?php
+			}
+?>
+			</table>
+<?php
+		} 
+		else 
+		{
+			debug_warning("Database refused to read students.");
+		}
+	} catch (Exception $ex) {
+		debug_error("ERROR: Failed to load students : ", $ex);
+	}	
+}
+
 function print_edit_student($record)
 {
 	$deletable = $record["beoordeeld"]==0;

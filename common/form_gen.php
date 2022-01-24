@@ -101,20 +101,25 @@ function print_stars($checked, $field = null)
 
 /// Bit of a weird location for this, 
 /// but I don't want a dedicated security.php yet.
-function can_edit($docent, $id = null)
+function can_edit($id = null)
 {
-	return has_role_for($docent, $id, "edit");
+	return has_role_for($id, "edit");
+}
+
+function can_create($id = null)
+{
+	return has_role_for($id, "edit");
 }
 
 /// Bit of a weird location for this, 
 /// but I don't want a dedicated security.php yet.
-function can_view($docent, $id = null)
+function can_view($id = null)
 {
 	// @TODO: Build much more complex check...
 	return true;
 }
 
-function has_role_for($docent, $id, $role)
+function has_role_for($id, $role)
 {
 	global $database;
 	// @TODO: Build more complex role checking system.
@@ -133,7 +138,7 @@ function has_role_for($docent, $id, $role)
 		$stmt = $database->prepare($sql);
 		// Additional database
 		$data = [
-			"field1" => $docent,
+			"field1" => $_SESSION["docent"],
 		];
 		
 		// Activate the query...

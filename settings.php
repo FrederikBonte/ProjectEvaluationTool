@@ -2,7 +2,7 @@
 require_once "common/settings.php";
 include "templates/header.txt";
 
-$edit = can_edit($_SESSION["docent"]);
+$edit = can_edit();
 ?>
 <h2>Huidige docent code <?=$_SESSION["docent"]?></h2>
 <p>
