@@ -38,9 +38,11 @@ include "templates/header.txt";
 	// * Manage the list of classes.
 	// * Import students through xml.
 	// * Manage the list of teachers.
-	//   Allow teachers to change their password.
+	//   Allow teachers to change their password. (settings.php)
 	//   Allow teachers to choose a new username.
+	//   Implement a role system that limits change rights.
 	//   Link Teachers to classes to make selecting students easier.
+	//   Link Teachers to locations to that not everybody sees all students.
 	// * Choose a project to reward for a student.
 	//   Only show projects that match the semester of the class?
 	// * Process the values entered by the teacher into the final "beoordeling" table.

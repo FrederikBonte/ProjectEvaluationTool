@@ -98,4 +98,54 @@ function print_stars($checked, $field = null)
 	}
 	echo "</span>";
 }
+
+/// Bit of a weird location for this, 
+/// but I don't want a dedicated security.php yet.
+function can_edit($docent, $id = null)
+{
+	return has_role_for($docent, $id, "edit");
+}
+
+/// Bit of a weird location for this, 
+/// but I don't want a dedicated security.php yet.
+function can_view($docent, $id = null)
+{
+	// @TODO: Build much more complex check...
+	return true;
+}
+
+function has_role_for($docent, $id, $role)
+{
+	global $database;
+	// @TODO: Build more complex role checking system.
+	global $database;
+	
+	// For now simply check if user is member of the admin group.
+	$sql = 
+	"SELECT * ".
+	"FROM docent_rol ".
+	"WHERE docentcode=:field1 AND rol=1";
+	
+	echo "<!-- $sql -->\n\r";
+	
+	try {		
+		// Prepare a query...
+		$stmt = $database->prepare($sql);
+		// Additional database
+		$data = [
+			"field1" => $docent,
+		];
+		
+		// Activate the query...
+		$stmt->execute($data);
+		// Retrieve one record.
+		$row=$stmt->fetch(PDO::FETCH_ASSOC);
+		// Return true if a record exists.
+		return $row;
+	}
+	catch (Exception $ex)
+	{
+		debug_error("Failed to check for login because ", $ex);
+	}	
+}
 ?>

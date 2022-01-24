@@ -14,11 +14,16 @@ if (!array_key_exists("docent", $_SESSION))
 	<title>Project Evaluatie Tool</title>
 	<link rel="stylesheet" type="text/css" href="styles/style.css" />
 	<meta charset="utf-8"/>
+	<!-- Add icon library -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
 	<div id="navbar">
 		<h1>Project Evaluatie Tool</h1>
-		<p>Welkom <?=$_SESSION["name"]?><a href="logout.php"><img align="right" width="32" src="images/logout.png" /></a></p>
+		<p>Welkom <?=$_SESSION["name"]?>
+		<a href="logout.php"><span class="fa fa-sign-out"> </span></a>
+		<a href="settings.php"><span class="fa fa-sliders"> </span></a>
+		</p>
 		<ul>
 			<li><a href="index.php">Home</a></li>
 			<li><a href="beoordelen.php">Beoordelen</a></li>

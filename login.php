@@ -50,29 +50,35 @@ function checkLogin($username, $password)
 	
 	echo "<!-- $sql -->\n\r";
 	
-	// Prepare a query...
-	$stmt = $database->prepare($sql);
-	// Additional database
-	$data = [
-		"field1" => $username,
-		"field2" => $password
-	];
-	
-	// Activate the query...
-	$stmt->execute($data);
-	// Retrieve one record.
-	$row=$stmt->fetch(PDO::FETCH_ASSOC);
-	// Return the found users id.
-	if ($row) 
-	{
-		$_SESSION["docent"] = $row["code"];
-		$_SESSION["name"] = $row["aanspreekvorm"];
+	try {		
+		// Prepare a query...
+		$stmt = $database->prepare($sql);
+		// Additional database
+		$data = [
+			"field1" => $username,
+			"field2" => $password
+		];
 		
+		// Activate the query...
+		$stmt->execute($data);
+		// Retrieve one record.
+		$row=$stmt->fetch(PDO::FETCH_ASSOC);
+		// Return the found users id.
+		if ($row) 
+		{
+			$_SESSION["docent"] = $row["code"];
+			$_SESSION["name"] = $row["aanspreekvorm"];
+			
+		}
+		else
+		{
+			debug_warning("Onbekende login gegevens");
+			return null;
+		}
 	}
-	else
+	catch (Exception $ex)
 	{
-		debug_warning("Onbekende login gegevens");
-		return null;
+		debug_error("Failed to check for login because ", $ex);
 	}
 }
 ?>

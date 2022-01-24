@@ -21,7 +21,10 @@ if (!array_key_exists("docent", $_SESSION))
 <body>
 	<div id="navbar">
 		<h1>Project Evaluatie Tool</h1>
-		<p>Welkom <?=$_SESSION["name"]?><a href="logout.php"><img align="right" width="32" src="images/logout.png" /></a></p>
+		<p>Welkom <?=$_SESSION["name"]?>
+		<a href="logout.php"><span class="fa fa-sign-out"> </span></a>
+		<a href="settings.php"><span class="fa fa-sliders"> </span></a>
+		</p>
 		<ul>
 			<li><a href="index.php">Home</a></li>
 			<li><a href="beoordelen.php">Beoordelen</a></li>
