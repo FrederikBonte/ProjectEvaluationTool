@@ -9,7 +9,7 @@ if (array_key_exists("change_passwd", $_REQUEST))
 	if ($rand1==$rand2)
 	{
 		unset($_SESSION["rand"]);
-		debug_dump($_REQUEST);
+		//debug_dump($_REQUEST);
 		$username = $_REQUEST["username"];
 		$password = $_REQUEST["passwd2"];
 		update_username_password($username, $password);

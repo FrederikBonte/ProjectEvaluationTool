@@ -55,6 +55,8 @@ include "templates/header.txt";
 	//
 	// Additionally: 
 	// More icons: https://fontawesome.com/v4.7/icons/
+	
+phpinfo();
 ?>
 </body>
 </html>

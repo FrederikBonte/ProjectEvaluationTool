@@ -65,11 +65,10 @@ if ($can_edit)
 <input type="file" name="students" />
 <?php
 print_submit_button("import", "Importeren");
-
+}
 ?>
 </form>
 <?php
-}
 if ($can_view)
 {
 ?>

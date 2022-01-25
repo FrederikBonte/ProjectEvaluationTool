@@ -101,9 +101,9 @@ function print_list_students($klas_id = null)
 			foreach ($stmt as $record) 	{
 ?>
 			<tr>
-				<td><?=mb_convert_encoding($record["voornaam"], "utf8")?></td>
-				<td><?=mb_convert_encoding($record["tussenvoegsel"], "utf8")?></td>
-				<td><?=mb_convert_encoding($record["achternaam"], "utf8")?></td>
+				<td><?=$record["voornaam"]?></td>
+				<td><?=$record["tussenvoegsel"]?></td>
+				<td><?=$record["achternaam"]?></td>
 				<td><?=$record["klas"]?></td>
 				<td>&nbsp;<?=($record["actief"]==1)?"ja":"<i>nee</i>"?></td>
 			</tr>
@@ -132,9 +132,9 @@ function print_edit_student($record)
 <?php
 	print_hidden_input("student_id", $record["nummer"]);
 ?>
-				<td><?php print_text_input("firstname", mb_convert_encoding($record["voornaam"], "utf8")); ?></td>
-				<td><?php print_text_input("middlename", mb_convert_encoding($record["tussenvoegsel"], "utf8")); ?></td>
-				<td><?php print_text_input("lastname", mb_convert_encoding($record["achternaam"], "utf8")); ?></td>
+				<td><?php print_text_input("firstname", $record["voornaam"]); ?></td>
+				<td><?php print_text_input("middlename", $record["tussenvoegsel"]); ?></td>
+				<td><?php print_text_input("lastname", $record["achternaam"]); ?></td>
 				<td><?php print_select_klas($record["klas"]); ?></td>
 				<td><?php print_checkbox("actief", $record["actief"]); ?></td>
 				<td>
