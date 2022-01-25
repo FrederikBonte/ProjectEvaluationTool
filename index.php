@@ -51,6 +51,10 @@ include "templates/header.txt";
 	//    Multiple rewards, only the highest is taken into account.
     //    Implement all the possible group calculations: sum, min, max, average and for now... Other...
 	// * Handle some form of help for all the pages.
+	//
+	//
+	// Additionally: 
+	// More icons: https://fontawesome.com/v4.7/icons/
 ?>
 </body>
 </html>

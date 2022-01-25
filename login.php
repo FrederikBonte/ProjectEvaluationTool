@@ -17,15 +17,17 @@ if (array_key_exists("login", $_REQUEST))
 {
 	// Attempt to login
 	debug_log("Attempt to login...");
-	debug_dump($_REQUEST);
+//	debug_dump($_REQUEST);
 	checkLogin($_REQUEST["username"], $_REQUEST["password"]);
-	if (array_key_exists("user_id", $_SESSION))
+	if (array_key_exists("docent", $_SESSION))
 	{
+//		debug_dump($_SESSION);
 		header("Location: index.php");
 		exit();
 	}
 	else
 	{
+//		debug_dump($_SESSION);
 		debug_warning("Login failed.");
 	}
 }
@@ -68,7 +70,6 @@ function checkLogin($username, $password)
 		{
 			$_SESSION["docent"] = $row["code"];
 			$_SESSION["name"] = $row["aanspreekvorm"];
-			
 		}
 		else
 		{

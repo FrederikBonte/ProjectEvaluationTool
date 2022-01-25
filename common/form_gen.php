@@ -34,14 +34,20 @@ function print_select($query, $name, $message, $selected_id = null, $label = nul
 	print "</select>";
 }
 
-function print_text_input($name, $value = null, $label = null)
+function print_text_input($name, $value = null, $label = null, $javascript = null)
 {
-?><?=$label?><input type="text" name="<?=$name?>" value="<?=$value?>" /><?php
+?><?=$label?><input type="text" name="<?=$name?>" value="<?=$value?>"  onchange="<?=$javascript?>" /><?php
 }
 
-function print_hidden_input($name, $value, $show = false)
+function print_password_input($name, $value = null, $label = null, $id=null, $javascript = null)
 {
-?><input type="hidden" name="<?=$name?>" value="<?=$value?>" /><?php
+?><?=$label?><input type="password" required id="<?=$id?>" name="<?=$name?>" value="<?=$value?>" 
+onchange="<?=$javascript?>" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();" /><?php
+}
+
+function print_hidden_input($name, $value, $show = false, $id = null)
+{
+?><input type="hidden" id="<?=$id?>" name="<?=$name?>" value="<?=$value?>" /><?php
 	if ($show)
 	{
 		echo $value;
@@ -60,9 +66,9 @@ function print_number_input($name, $min, $max, $value = null, $label = null)
 ?><?=$label?><input type="number" name="<?=$name?>" min="<?=$min?>" max="<?=$max?>" <?=$value_disp?> /><?php
 }
 
-function print_submit_button($name, $value)
+function print_submit_button($name, $value, $id = null)
 {
-?><button type="submit" name="<?=$name?>"><?=$value?></button><?php	
+?><button type="submit" id="<?=$id?>" name="<?=$name?>"><?=$value?></button><?php	
 }
 
 function print_checkbox($name, $value = false)
