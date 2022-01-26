@@ -9,7 +9,7 @@ function print_select($query, $name, $message, $selected_id = null, $label = nul
 	global $database;
 	debug_log($query);
 ?>
-		<?=$label?><select name="<?=$name?>" onchange="<?=$javascript?>">
+		<?=$label?><select name="<?=$name?>" class="slct_<?=$name?>" onchange="<?=$javascript?>">
 		<option value="-1" disabled selected><?=$message?></option>
 <?php
 	// Send the query to the database server.
@@ -36,7 +36,7 @@ function print_select($query, $name, $message, $selected_id = null, $label = nul
 
 function print_text_input($name, $value = null, $label = null, $javascript = null)
 {
-?><?=$label?><input type="text" name="<?=$name?>" value="<?=$value?>"  onchange="<?=$javascript?>" /><?php
+?><?=$label?><input type="text" class="text_<?=$name?>" name="<?=$name?>" value="<?=$value?>"  onchange="<?=$javascript?>" /><?php
 }
 
 function print_password_input($name, $value = null, $label = null, $id=null, $javascript = null)
@@ -63,12 +63,12 @@ function print_number_input($name, $min, $max, $value = null, $label = null)
 {
 	// When the value is null, don't actually add a value="" to the field.
 	$value_disp = $value?" value=\"$value\" ":"";
-?><?=$label?><input type="number" name="<?=$name?>" min="<?=$min?>" max="<?=$max?>" <?=$value_disp?> /><?php
+?><?=$label?><input type="number" name="<?=$name?>" class="num_<?=$name?>" min="<?=$min?>" max="<?=$max?>" <?=$value_disp?> /><?php
 }
 
 function print_submit_button($name, $value, $id = null)
 {
-?><button type="submit" id="<?=$id?>" name="<?=$name?>"><?=$value?></button><?php	
+?><button type="submit" class="smt_<?=$name?>" id="<?=$id?>" name="<?=$name?>"><?=$value?></button><?php	
 }
 
 function print_checkbox($name, $value = false)

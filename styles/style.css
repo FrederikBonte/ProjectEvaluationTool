@@ -89,7 +89,22 @@ div#navbar ul li
 
 .error {
 	border: white 2px;
-	background-color: lightred;
+	background-color: red;
+	font-weight: bold;
 	color: black;
 	padding: 5px;	
 }
+
+input.text_middlename {
+	width: 50px;
+}
+
+select.slct_klas {
+	width: 100px;
+}
+
+input.num_student_id {
+	width: 100px;
+}
+
+

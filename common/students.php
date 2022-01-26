@@ -273,7 +273,7 @@ function print_add_student_tr_form($klas)
 ?>
 			<tr>
 			<form>
-				<td><?php print_number_input("student_id", 1000000, 99999999); ?></td>
+				<td><?php print_number_input("student_id", 100000, 99999999); ?></td>
 				<td><?php print_text_input("firstname"); ?></td>
 				<td><?php print_text_input("middlename"); ?></td>
 				<td><?php print_text_input("lastname"); ?></td>
