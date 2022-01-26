@@ -15,6 +15,11 @@ if (array_key_exists("evaluate_project", $_REQUEST))
 	{
 		unset($_SESSION["rand"]);
 		debug_dump($_REQUEST);
+		$criteria = $_REQUEST["criterium"];
+		$student = $_REQUEST["student"];
+		$project = $_REQUEST["project"];
+		add_student_project($student, $project, $criteria);
+		print_select_klas_form();
 	}
 	else
 	{

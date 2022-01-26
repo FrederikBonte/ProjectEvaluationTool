@@ -173,6 +173,7 @@ function print_project_evaluation_criteria($project_id, $student_number)
 <?php				
 			}
 			print_hidden_input("student", $student_number);
+			print_hidden_input("project", $project_id);
 			print_rand_check();
 ?>
 			<tr><td>Opslaan</td><td></td><td><?php print_submit_button("evaluate_project", "Opslaan"); ?></td></tr>
@@ -294,5 +295,52 @@ function add_student_evalution($student_id, $time, $text)
 	{
 		debug_error("Failed to add new student evaluation because ", $ex);
 	}
+}
+
+function add_student_project($student_id, $project_id, $criteria)
+{
+	global $database;
+	
+	$query  = "INSERT INTO beoordeling (docentcode, leerlingnummer, groepid, criteriumid, datum, waardering) ";
+	$query .= "VALUES (:veld1, :veld2, :veld3, :veld4, CURRENT_DATE(), :veld5)";	
+	
+	debug_log($query);
+	
+	$teacher_id = $_SESSION["docent"];
+	$error = false;
+	foreach($criteria as $crit_id => $crit_value) 
+	{
+		$data = [
+			"veld1" => $teacher_id,
+			"veld2" => $student_id,
+			"veld3" => $project_id,
+			"veld4" => $crit_id,
+			"veld5" => $crit_value
+		];
+		
+		try 
+		{
+			$stmt = $database->prepare($query);
+			if (!$stmt->execute($data)) 
+			{
+				print_warning("Database refused to add new project criterium evaluation.");
+				$error = true;
+			}
+		} 
+		catch (Exception $ex) 
+		{
+			debug_error("Failed to add new project criterium evaluation because ", $ex);
+			$error = true;
+		}		
+	}
+	
+	if ($error)
+	{
+		debug_error("Unfortunately something went wrong while storing this evaluation.");
+	}
+	else
+	{
+		debug_warning("Beoorderling voor $student_id door $teacher_id succevol toegevoegd.");
+	}	
 }
 ?>

@@ -34,6 +34,9 @@ include "templates/header.txt";
 	// * Choose who is teaching and select the required class.
 	//   No longer needed because of login system.
 	// * Generate a project evaluation screen for the teacher.
+	// * Choose a project to reward for a student.
+	// * Process the values entered by the teacher into the final "beoordeling" table.
+	//   Only show projects that match the semester of the class?
 	// @TODO:
 	// * Handle template projects (cannot be used to reward points, only as copy source.)
 	// * Import students through xml.
@@ -43,9 +46,6 @@ include "templates/header.txt";
 	//   Implement a role system that limits change rights.
 	//   Link Teachers to classes to make selecting students easier. DONE
 	//   Link Teachers to locations to that not everybody sees all students.
-	// * Choose a project to reward for a student.
-	//   Only show projects that match the semester of the class?
-	// * Process the values entered by the teacher into the final "beoordeling" table.
 	// * Allow subgroups of criteria
 	//    For instance two sub groups, and the main group calculates the average of those.
 	//    Multiple rewards, only the highest is taken into account.
