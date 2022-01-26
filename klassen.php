@@ -4,7 +4,21 @@ include "templates/header.txt";
 header('Content-type: text/html; charset=utf-8');
 
 // @TODO: Security check before actually executing function.
-if (array_key_exists("update_student", $_REQUEST))
+if (array_key_exists("add_student", $_REQUEST))
+{
+	//debug_dump($_REQUEST);
+	$id = $_REQUEST["student_id"];
+	$firstname = $_REQUEST["firstname"];
+	$middlename = $_REQUEST["middlename"];
+	if (strlen(trim($middlename))==0)
+	{
+		$middlename = null;
+	}
+	$lastname = $_REQUEST["lastname"];
+	$klas = $_REQUEST["klas"];
+	add_student($id, $firstname, $middlename, $lastname, $klas);	
+}
+else if (array_key_exists("update_student", $_REQUEST))
 {
 	if (!array_key_exists("klas", $_REQUEST))
 	{

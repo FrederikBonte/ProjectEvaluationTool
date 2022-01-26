@@ -16,6 +16,16 @@ function print_select_any_klas($selected_id = null, $label = null)
 	print_select($query, "klas", "Kies een klas", $selected_id, $label);
 }
 
+function print_select_unassigned_klas($teacher, $label = null)
+{
+	global $database;
+	$sqlteach = substr($teacher, 0, 5);
+	$query  = "SELECT code as id, omschrijving as value FROM klas ";
+	$query .= "WHERE actief=1 AND code NOT IN (SELECT klascode FROM docent_klas WHERE docentcode='$sqlteach') ";
+	$query .= "ORDER BY jaar ";	
+	print_select($query, "klas", "Kies een bestaande klas", null, $label);
+}
+
 function print_select_student($klas_id = null, $selected_id = null, $label = null) 
 {
 	$query = "SELECT nummer as id, concat_ws(\" \", voornaam, tussenvoegsel, achternaam) as value ".
@@ -48,6 +58,86 @@ function print_add_klas_form()
 <?php
 }
 
+function print_add_klas_tr_form()
+{
+?>
+	<tr>
+	<form method="POST">
+	<td><?php print_text_input("code");?></td>
+	<td><?php print_text_input("description"); ?></td>
+	<td><?php print_number_input("year", 2022, 2040, 2022); ?></td>
+	<td><?php print_number_input("semester", 1,8, 1); ?></td>
+	<td></td>
+	<td><?php print_submit_button("add_klas", "Toevoegen"); ?></td>
+	</form>
+	</tr>
+<?php
+}
+
+function print_edit_klas_tr_form($record)
+{
+?>
+	<tr>
+	<form method="POST">
+	<td><?php print_hidden_input("code", $record["code"], true);?></td>
+	<td><?php print_text_input("description", $record["omschrijving"]); ?></td>
+	<td><?php print_number_input("year", 2018, 2040, $record["jaar"]); ?></td>
+	<td><?php print_number_input("semester", 1,8, $record["semester"]); ?></td>
+	<td><?php print_checkbox("active", $record["actief"]); ?></td>
+	<td><?php print_submit_button("update_klas", "Wijzigen"); ?></td>
+	<td><?php print_submit_button("unassign_klas", "Uit lijst"); ?></td>
+	</form>
+	</tr>
+<?php
+}
+
+function print_edit_docent_klas_form($teacher)
+{
+	global $database;
+	$sqlteach = substr($teacher, 0, 5);
+	$query = "SELECT * FROM klas, docent_klas WHERE klas.code = klascode AND docentcode='$sqlteach'";
+	debug_log($query);
+	
+	try {
+		$stmt = $database->prepare($query);
+		if ($stmt->execute()) 
+		{
+?>
+			<h3>Klassen</h3>
+			<table>
+			<tr>
+				<th>Code</th>
+				<th>Omschrijving</th>
+				<th>Jaar</th>
+				<th>Semester</th>
+				<th>Actief</th>
+				<th>Actie</th>
+			</tr>
+<?php
+			foreach ($stmt as $record) 	{
+				print_edit_klas_tr_form($record);
+			}
+			print_add_klas_tr_form();
+?>
+			<tr>
+			<form method="POST">
+				<td><?php print_select_unassigned_klas($teacher); ?></td>
+				<td></td><td></td><td></td><td></td>
+				<td><?php print_submit_button("assign_klas", "Toevoegen"); ?></td>
+			</form>
+			</tr>
+			</table>
+<?php
+		} 
+		else 
+		{
+			debug_warning("Database refused to read students.");
+		}
+	} catch (Exception $ex) {
+		debug_error("ERROR: Failed to load students : ", $ex);
+	}	
+}
+
 function print_edit_students($klas_id = null)
 {
 	global $database;
@@ -68,6 +158,7 @@ function print_edit_students($klas_id = null)
 			<h2>Studenten</h2>
 			<table>
 			<tr>
+				<th>Nummer</th>			
 				<th>Naam</th>
 				<th>Tussenvoegsel</th>
 				<th>Achternaam</th>
@@ -77,10 +168,12 @@ function print_edit_students($klas_id = null)
 			</tr>
 <?php
 			foreach ($stmt as $record) 	{
-				// For instance, we don't assume the student will get the maximum of negative points!
-				print_edit_student($record);
+				print_edit_student_tr_form($record);
 			}
-			//print_add_student();
+			if ($klas_id)
+			{
+				print_add_student_tr_form($klas_id);
+			}
 ?>
 			</table>
 <?php
@@ -114,6 +207,7 @@ function print_list_students($klas_id = null)
 			<h2>Studenten</h2>
 			<table>
 			<tr>
+				<th>Nummer</th>
 				<th>Naam</th>
 				<th>Tussenvoegsel</th>
 				<th>Achternaam</th>
@@ -124,6 +218,7 @@ function print_list_students($klas_id = null)
 			foreach ($stmt as $record) 	{
 ?>
 			<tr>
+				<td><?=$record["nummer"]?></td>
 				<td><?=$record["voornaam"]?></td>
 				<td><?=$record["tussenvoegsel"]?></td>
 				<td><?=$record["achternaam"]?></td>
@@ -145,16 +240,14 @@ function print_list_students($klas_id = null)
 	}	
 }
 
-function print_edit_student($record)
+function print_edit_student_tr_form($record)
 {
 	$deletable = $record["beoordeeld"]==0;
 	//debug_dump($record);
 ?>
 			<tr>
 			<form>
-<?php
-	print_hidden_input("student_id", $record["nummer"]);
-?>
+				<td><?php print_hidden_input("student_id", $record["nummer"], true); ?></td>
 				<td><?php print_text_input("firstname", $record["voornaam"]); ?></td>
 				<td><?php print_text_input("middlename", $record["tussenvoegsel"]); ?></td>
 				<td><?php print_text_input("lastname", $record["achternaam"]); ?></td>
@@ -170,6 +263,23 @@ function print_edit_student($record)
 	}
 ?>
 				</td>
+			</form>
+			</tr>
+<?php
+}
+
+function print_add_student_tr_form($klas)
+{
+?>
+			<tr>
+			<form>
+				<td><?php print_number_input("student_id", 1000000, 99999999); ?></td>
+				<td><?php print_text_input("firstname"); ?></td>
+				<td><?php print_text_input("middlename"); ?></td>
+				<td><?php print_text_input("lastname"); ?></td>
+				<td><?php print_hidden_input("klas", $klas, true); ?></td>
+				<td></td>
+				<td><?php print_submit_button("add_student", "Toevoegen");?></td>
 			</form>
 			</tr>
 <?php
@@ -542,7 +652,7 @@ function unassign_klas_from_teacher($klas_code, $teacher_code)
 {
 	global $database;
 	
-	$query  = "DELETE FROM docent_klas ".
+	$query  = "DELETE FROM docent_klas ";
 	$query .= "WHERE docentcode=:veld0 ";
 	$query .= "AND klascode=:veld1";	
 	
@@ -572,11 +682,11 @@ function unassign_klas_from_teacher($klas_code, $teacher_code)
 	}	
 }
 
-function update_klas($code, $description, $year, $semester)
+function update_klas($code, $description, $year, $semester, $active)
 {
 	global $database;
 	
-	$query  = "UPDATE klas SET omschrijving=:veld1, jaar=:veld2, semester=:veld3) ";
+	$query  = "UPDATE klas SET omschrijving=:veld1, jaar=:veld2, semester=:veld3, actief=:veld4 ";
 	$query .= "WHERE code=:veld0";	
 	
 	debug_log($query);
@@ -585,7 +695,8 @@ function update_klas($code, $description, $year, $semester)
 		"veld0" => $code,
 		"veld1" => $description,
 		"veld2" => $year,
-		"veld3" => $semester
+		"veld3" => $semester,
+		"veld4" => $active
 	];
 	
 	try 

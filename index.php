@@ -23,6 +23,7 @@ include "templates/header.txt";
 	//   ONLY un-awarded methods may still be changed (min/max value)
 	// * Manage the list of all possible criteria.
 	//   NEVER REMOVE CRITERIA THAT WERE ALREADY AWARDED TO STUDENTS!!!
+	// * Manage the list of classes.
 	// * Manage the list of students.
 	// * Import students from CSV.
 	// * Export students to CSV and XML.
@@ -35,13 +36,12 @@ include "templates/header.txt";
 	// * Generate a project evaluation screen for the teacher.
 	// @TODO:
 	// * Handle template projects (cannot be used to reward points, only as copy source.)
-	// * Manage the list of classes.
 	// * Import students through xml.
 	// * Manage the list of teachers.
-	//   Allow teachers to change their password. (settings.php)
-	//   Allow teachers to choose a new username.
+	//   Allow teachers to change their password. (settings.php) DONE
+	//   Allow teachers to choose a new username. DONE
 	//   Implement a role system that limits change rights.
-	//   Link Teachers to classes to make selecting students easier.
+	//   Link Teachers to classes to make selecting students easier. DONE
 	//   Link Teachers to locations to that not everybody sees all students.
 	// * Choose a project to reward for a student.
 	//   Only show projects that match the semester of the class?
