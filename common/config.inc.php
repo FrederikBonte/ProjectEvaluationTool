@@ -2,11 +2,11 @@
 date_default_timezone_set('Europe/Amsterdam');
 
 // Connect to mysql on the localhost:3307, use the database "bibliotheek".
-$databaseConnectionString = "mysql:host=localhost;port=3306;dbname=projecten;charset=utf8";
+$databaseConnectionString = "mysql:host=192.168.1.1;port=3306;dbname=projecten;charset=utf8";
 // Use this username.
-$username = "root";
+$username = "petapp";
 // And this password.
-$password = "usbw";
+$password = "Geheim1234!";
 
 // try to connect to the database.
 try {

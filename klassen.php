@@ -3,6 +3,7 @@ require_once "common/students.php";
 include "templates/header.txt";
 header('Content-type: text/html; charset=utf-8');
 
+// @TODO: Security check before actually executing function.
 if (array_key_exists("update_student", $_REQUEST))
 {
 	if (!array_key_exists("klas", $_REQUEST))
@@ -39,14 +40,26 @@ else if (array_key_exists("import", $_REQUEST))
 		debug_warning("Alleen tekst bestanden kunnen op dit moment geimporteerd worden.");
 	}
 }
+else if (array_key_exists("add_klas", $_REQUEST))
+{
+	$code = $_REQUEST["code"];
+	$description = $_REQUEST["description"];
+	$year = $_REQUEST["year"];
+	$semester = $_REQUEST["semester"];
+	add_klas($code, $description, $year, $semester);
+}
 	
 //print_select_klas();
 //print_select_student("0SV1");
 
 $can_edit = can_edit("klas");
 $can_view = can_view("klas");
+$can_create = can_create("klas");
+if ($can_create)
+{
+	print_add_klas_form();
+}
 ?>
-<br/>
 <h3>Klas bewerken</h3>
 <form method="POST" enctype="multipart/form-data">
 <?php

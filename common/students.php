@@ -25,6 +25,29 @@ function print_select_student($klas_id = null, $selected_id = null, $label = nul
 	print_select($query, "student", "Kies een leerling", $selected_id, $label);
 }
 
+function print_add_klas_form()
+{
+?>
+	<h3>Voeg een nieuwe klas toe</h3>
+	<p>
+		Deze nieuwe klas wordt meteen toegevoegd aan uw lijst met klassen.
+	</p>
+	<form method="POST">
+<?php
+	print_text_input("code", null, "Klas code : ");
+	echo "<br />";
+	print_text_input("description", null, "Omschrijving : ");
+	echo "<br />";
+	print_number_input("year", 2022, 2040, null, "Jaar (cohort) : ");
+	echo "<br />";
+	print_number_input("semester", 1,8,null, "Semester : ");
+	echo "<br />";
+	print_submit_button("add_klas", "Toevoegen");
+?>		
+	</form>
+<?php
+}
+
 function print_edit_students($klas_id = null)
 {
 	global $database;
@@ -446,5 +469,142 @@ function update_student($number, $firstname, $middle, $lastname, $klas, $active 
 	}
 }
 
+function add_klas($code, $description, $year, $semester)
+{
+	global $database;
+	
+	$query  = "INSERT INTO klas (code, omschrijving, jaar, semester) ";
+	$query .= "VALUES (:veld0, :veld1, :veld2, :veld3)";	
+	
+	debug_log($query);
+
+	$data = [
+		"veld0" => $code,
+		"veld1" => $description,
+		"veld2" => $year,
+		"veld3" => $semester
+	];
+	
+	try 
+	{
+		debug_log("About to add new klas.");
+		$stmt = $database->prepare($query);
+		if ($stmt->execute($data)) 
+		{
+			debug_log("Klas successfully added.");
+			assign_klas_to_teacher($code, $_SESSION["docent"]);
+		} 
+		else 
+		{
+			debug_warning("Database refused to add new klas.");
+		}
+	} 
+	catch (Exception $ex) 
+	{
+		debug_error("ERROR: Failed to add klas : ", $ex);
+	}
+}
+
+function assign_klas_to_teacher($klas_code, $teacher_code)
+{
+	global $database;
+	
+	$query  = "INSERT INTO docent_klas (docentcode, klascode) ";
+	$query .= "VALUES (:veld0, :veld1)";	
+	
+	debug_log($query);
+
+	$data = [
+		"veld0" => $teacher_code,
+		"veld1" => $klas_code
+	];
+	
+	try 
+	{
+		debug_log("About to add klas $klas_code to teacher $teacher_code.");
+		$stmt = $database->prepare($query);
+		if ($stmt->execute($data)) 
+		{
+			debug_log("Klas successfully added.");
+		} 
+		else 
+		{
+			debug_warning("Database refused to add klas.");
+		}
+	} 
+	catch (Exception $ex) 
+	{
+		debug_error("ERROR: Failed to add klas : ", $ex);
+	}	
+}
+
+function unassign_klas_from_teacher($klas_code, $teacher_code)
+{
+	global $database;
+	
+	$query  = "DELETE FROM docent_klas ".
+	$query .= "WHERE docentcode=:veld0 ";
+	$query .= "AND klascode=:veld1";	
+	
+	debug_log($query);
+
+	$data = [
+		"veld0" => $teacher_code,
+		"veld1" => $klas_code
+	];
+	
+	try 
+	{
+		debug_log("About to add klas $klas_code to teacher $teacher_code.");
+		$stmt = $database->prepare($query);
+		if ($stmt->execute($data)) 
+		{
+			debug_log("Klas successfully added.");
+		} 
+		else 
+		{
+			debug_warning("Database refused to add klas.");
+		}
+	} 
+	catch (Exception $ex) 
+	{
+		debug_error("ERROR: Failed to add klas : ", $ex);
+	}	
+}
+
+function update_klas($code, $description, $year, $semester)
+{
+	global $database;
+	
+	$query  = "UPDATE klas SET omschrijving=:veld1, jaar=:veld2, semester=:veld3) ";
+	$query .= "WHERE code=:veld0";	
+	
+	debug_log($query);
+
+	$data = [
+		"veld0" => $code,
+		"veld1" => $description,
+		"veld2" => $year,
+		"veld3" => $semester
+	];
+	
+	try 
+	{
+		debug_log("About to update klas $code.");
+		$stmt = $database->prepare($query);
+		if ($stmt->execute($data)) 
+		{
+			debug_log("Klas successfully updated.");
+		} 
+		else 
+		{
+			debug_warning("Database refused to update klas.");
+		}
+	} 
+	catch (Exception $ex) 
+	{
+		debug_error("ERROR: Failed to update klas : ", $ex);
+	}
+}
 
 ?>
