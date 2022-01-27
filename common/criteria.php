@@ -65,6 +65,39 @@ function print_select_criterium($selected_id = null, $label = null)
 	print "</select>";
 }
 
+function print_select_unassigned_criterium($project_id) 
+{
+	global $database;
+	$query  = "SELECT id, naam ";
+	$query .= "FROM criterium ";	
+	$query .= "WHERE id NOT IN (SELECT criteriumid FROM project_criterium WHERE groepid=$project_id)";	
+	debug_log($query);
+?>
+		<select name="criterium">
+		<option value="-1" disabled selected>Kies een criterium</option>
+<?php
+	// Send the query to the database server.
+	$stmt = $database->query($query, PDO::FETCH_ASSOC);
+	// Loop through all the records.
+	foreach ($stmt as $record) 	
+	{
+		$id = $record["id"];
+		$value = $record["naam"];
+		
+		// Check if this option should be pre-selected.
+		$selected_yn="";
+		if ($id==$selected_id) {
+			$selected_yn = "selected";
+		}
+		
+		// Generate an option for each item in the table.
+?>
+		<option value="<?=$id?>" <?=$selected_yn?>><?=$value?></option>
+<?php
+	}
+	print "</select>";
+}
+
 function print_edit_project_criteria($project_id) 
 {
 	global $database;
@@ -146,7 +179,7 @@ function print_add_project_criterium($project_id)
 			<tr>
 			<form>
 				<input type="hidden" name="group_id" value="<?=$project_id?>" />
-				<td><?php print_select_criterium(); ?></td>
+				<td><?php print_select_unassigned_criterium($project_id); ?></td>
 				<td>...</td>
 				<td><input type="number" name="weight" step="0.05" value="1" /></td>
 				<td>...</td>
