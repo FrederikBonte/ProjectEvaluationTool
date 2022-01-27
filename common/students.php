@@ -68,7 +68,7 @@ function print_add_klas_tr_form()
 	<td><?php print_number_input("year", 2022, 2040, 2022); ?></td>
 	<td><?php print_number_input("semester", 1,8, 1); ?></td>
 	<td></td>
-	<td><?php print_submit_button("add_klas", "Toevoegen"); ?></td>
+	<td><?php print_submit_button("add_klas", "<span class=\"fa fa-plus\"></span>"); ?></td>
 	</form>
 	</tr>
 <?php
@@ -84,8 +84,8 @@ function print_edit_klas_tr_form($record)
 	<td><?php print_number_input("year", 2018, 2040, $record["jaar"]); ?></td>
 	<td><?php print_number_input("semester", 1,8, $record["semester"]); ?></td>
 	<td><?php print_checkbox("active", $record["actief"]); ?></td>
-	<td><?php print_submit_button("update_klas", "Wijzigen"); ?></td>
-	<td><?php print_submit_button("unassign_klas", "Uit lijst"); ?></td>
+	<td><?php print_submit_button("update_klas", "<span class=\"fa fa-pencil\"></span>"); ?></td>
+	<td><?php print_submit_button("unassign_klas", "<span class=\"fa fa-chain-broken\"></span>"); ?></td>
 	</form>
 	</tr>
 <?php
@@ -123,7 +123,7 @@ function print_edit_docent_klas_form($teacher)
 			<form method="POST">
 				<td><?php print_select_unassigned_klas($teacher); ?></td>
 				<td></td><td></td><td></td><td></td>
-				<td><?php print_submit_button("assign_klas", "Toevoegen"); ?></td>
+				<td><?php print_submit_button("assign_klas", "<span class=\"fa fa-chain\"></span>"); ?></td>
 			</form>
 			</tr>
 			</table>
@@ -255,11 +255,11 @@ function print_edit_student_tr_form($record)
 				<td><?php print_checkbox("actief", $record["actief"]); ?></td>
 				<td>
 <?php
-	print_submit_button("update_student", "Wijzigen");
+	print_submit_button("update_student", "<span class=\"fa fa-pencil\"></span>");
 	// Only methods that are not used by a criterium can be deleted.
 	if ($deletable) 
 	{
-		print_submit_button("remove_student", "Verwijderen");
+		print_submit_button("remove_student", "<span class=\"fa fa-trash\"></span>");
 	}
 ?>
 				</td>
@@ -279,7 +279,7 @@ function print_add_student_tr_form($klas)
 				<td><?php print_text_input("lastname"); ?></td>
 				<td><?php print_hidden_input("klas", $klas, true); ?></td>
 				<td></td>
-				<td><?php print_submit_button("add_student", "Toevoegen");?></td>
+				<td><?php print_submit_button("add_student", "<span class=\"fa fa-plus\"></span>");?></td>
 			</form>
 			</tr>
 <?php

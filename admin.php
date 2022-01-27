@@ -1,5 +1,5 @@
 <?php
-require_once "common/admin.php";
+require_once "common/teachers.php";
 include "templates/header.txt";
 header('Content-type: text/html; charset=utf-8');
 

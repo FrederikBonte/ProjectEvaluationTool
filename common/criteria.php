@@ -132,8 +132,8 @@ function print_edit_project_criterium($record)
 				<td><?=$record["max"]?></td>
 				<td><input type="checkbox" name="autocalc" <?=$autocalc_checked?> /></td>
 				<td>
-					<button type="submit" name="update_crit">Wijzigen</button>
-					<button type="submit" name="remove_crit">Verwijderen</button>
+					<button type="submit" name="update_crit"><span class="fa fa-pencil"></span></button>
+					<button type="submit" name="remove_crit"><span class="fa fa-chain-broken"></span></button>
 				</td>
 			</form>
 			</tr>
@@ -152,7 +152,7 @@ function print_add_project_criterium($project_id)
 				<td>...</td>
 				<td><input type="checkbox" name="autocalc" checked /></td>
 				<td>
-					<button type="submit" name="add_crit">Toevoegen</button>
+					<button type="submit" name="add_crit"><span class="fa fa-chain"></span></button>
 				</td>
 			</form>
 			</tr>
@@ -171,7 +171,7 @@ function print_create_project_criterium($project_id)
 				<td>...</td>
 				<td><input type="checkbox" name="autocalc" checked /></td>
 				<td>
-					<button type="submit" name="create_crit">Nieuw criterium</button>
+					<button type="submit" name="create_crit"><span class="fa fa-plus"></span></button>
 				</td>
 			</form>
 			</tr>
@@ -273,13 +273,13 @@ function print_edit_criterium($record)
 				
 				<td><input type="checkbox" name="autocalc" <?=$autocalc_checked?> /></td>
 				<td>
-					<button type="submit" name="update_crit">Wijzigen</button>
+					<button type="submit" name="update_crit"><span class="fa fa-pencil"></span></button>
 <?php
 	// Only criteria that are not in use may be removed.
 	if ($editable) 
 	{
 ?>
-					<button type="submit" name="remove_crit">Verwijderen</button>
+					<button type="submit" name="remove_crit"><span class="fa fa-trash"></span></button>
 <?php
 	}
 ?>
@@ -314,7 +314,7 @@ function print_add_criterium()
 				<td><?php print_select_method(); ?></td>
 				<td><input type="checkbox" name="autocalc" checked /></td>
 				<td>
-					<button type="submit" name="add_crit">Toevoegen</button>
+					<button type="submit" name="add_crit"><span class="fa fa-plus"></span></button>
 				</td>
 			</form>
 			</tr>
@@ -419,11 +419,11 @@ function print_edit_method($record)
 				
 				<td>
 <?php
-	print_submit_button("update_method", "Wijzigen");
+	print_submit_button("update_method", "<span class=\"fa fa-pencil\"></span>");
 	// Only methods that are not used by a criterium can be deleted.
 	if ($deletable) 
 	{
-		print_submit_button("remove_method", "Verwijderen");
+		print_submit_button("remove_method", "<span class=\"fa fa-trash\"></span>");
 	}
 ?>
 				</td>
@@ -454,7 +454,7 @@ function print_add_method()
 				<td><input type="number" name="min" min="0" value="<?=$record["min"]?>" /></td>
 				<td><input type="number" name="max" min="1" value="<?=$record["max"]?>" /></td>
 				<td>
-					<button type="submit" name="add_method">Toevoegen</button>
+					<button type="submit" name="add_method"><span class="fa fa-plus"></span></button>
 				</td>
 			</form>
 			</tr>

@@ -1,5 +1,5 @@
 <?php
-require_once "common/settings.php";
+require_once "common/teachers.php";
 require_once "common/students.php";
 include "templates/header.txt";
 
