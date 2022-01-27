@@ -38,14 +38,16 @@ include "templates/header.txt";
 	// * Process the values entered by the teacher into the final "beoordeling" table.
 	//   Only show projects that match the semester of the class?
 	// * Added help text to the home page. (@TODO: Add help to EACH page.)
+	// * Personal (settings) page
+	//   Allow teachers to change their password. (settings.php) DONE
+	//   Allow teachers to choose a new username. DONE
+	//   Link Teachers to classes to make selecting students easier. DONE
+	// * Admin page to easily add new teachers.
 	// @TODO:
 	// * Handle template projects (cannot be used to reward points, only as copy source.)
 	// * Import students through xml.
 	// * Manage the list of teachers.
-	//   Allow teachers to change their password. (settings.php) DONE
-	//   Allow teachers to choose a new username. DONE
 	//   Implement a role system that limits change rights.
-	//   Link Teachers to classes to make selecting students easier. DONE
 	// * Link Teachers to locations to that not everybody sees all students.
 	//	 Create a location table (ID, name, address, etc.)
 	//   Link teachers, students and classes to locations. (projects can be shared.)

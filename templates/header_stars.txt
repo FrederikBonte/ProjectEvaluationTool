@@ -1,11 +1,17 @@
 <?php
 session_start();
 
+$admin = false;
 if (!array_key_exists("docent", $_SESSION))
 {
 	// User must first login.
 	header("Location: login.php");
 	exit();
+}
+else
+{
+	// Only one person can add teachers.
+	$admin = ($_SESSION["docent"]=="fbe02");
 }
 ?><!DOCTYPE html>
 <html>
@@ -24,6 +30,7 @@ if (!array_key_exists("docent", $_SESSION))
 		<p>Welkom <?=$_SESSION["name"]?>
 		<a href="logout.php"><span class="fa fa-sign-out"> </span></a>
 		<a href="settings.php"><span class="fa fa-sliders"> </span></a>
+		<?php if ($admin) {?><a href="admin.php"><span class="fa fa-users"> </span></a><?php }?>
 		</p>
 		<ul>
 			<li><a href="index.php">Home</a></li>
