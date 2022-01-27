@@ -1,0 +1,49 @@
+<h3>Introductie</h3>
+<p>
+Deze online tool is ontworpen om docenten gezamenlijk een heldere beoorderlingsmethode te bieden voor
+de verschillende projecten die zij evalueren. Natuurlijk zullen er altijd verschillen zijn, maar op
+deze manier gebruikt iedere docent dezelfde criteria.
+</p>
+<h3><a href="projecten.php">Projecten</a></h3>
+<p>
+Een project bestaat uit een lijst van criteria om te testen. Bij de criteria details staat beschreven
+wat er precies bedoelt wordt en daarmee wordt dan hopenlijk ook duidelijk hoe het criterium beoordeeld 
+moet worden.
+</p>
+<h3><a href="criteria.php">Criteria en (beoordelings)methoden</a></h3>
+<p>
+Als een criterium "leerling gebruikt deze techniek" beoordeeld wordt met een Ja/Nee methode. Dan is de
+minste aanleiding om dit veld op Ja te zetten voldoende.
+</p>
+<p>
+Zou namelijk een minimale ondergrens nodig zijn: "leerling zet deze techniek in".
+Dan zou de beoordelingsmethode een schaal moeten zijn. 
+Bijvoorbeeld tussen 0 en 2 (Nee/Matig/Ja) of tusen 0 en 3 (Nee/Incompleet/Voldoende/Goed)
+</p>
+<p>
+Het kan altijd nodig blijken om een nieuwe schaal te maken. Als een leerling een specifiek aantal
+keren iets zou moeten doen, dan kun je daar een specifieke methode voor aanmaken.<br />
+Het is niet nodig om IVG te gebruiken als een schaal tussen 0 en 5 beter was geweest.
+</p>
+<p>
+Ten slotte is er nog de bekende "cijfer" of "percentage" methode. Deze schaal wordt vooral aangeboden
+als een overgang. Een cijfer is soms heel moeilijk te classificeren, in de zin van "Waarom is precies dit cijfer gegeven".
+Bij een forms meerkeuze toets is dat natuurlijk volkomen duidelijk overigens.
+</p>
+<h3><a href="klassen.php">Klassen en leerlingen</a></h3>
+<p>
+Leerlingen en klassen zijn op dit moment voor iedereen te zien. (Daar moet misschien wat aan gaan gebeuren.) 
+</p>
+<p>
+Op de klassen & leerlingen pagina kan iedereen een klas beheren en leerlingen toevoegen of aanpassen.
+Het is natuurlijk wel zo de een leerling in slechts 1 klas kan zitten.
+</p>
+<p>
+Op een ieders <a href="settings.php">persoonlijke</a> pagina kan bijgehouden worden of je les geeft aan een klas of niet meer.
+</p>
+<h3><a href="beoordelen.php">Beoordelen en coachen</a></h3>
+<p>
+Op de beoordeling pagina kan een docent dan een (toegewezen) klas kiezen. Daarna &eacute;&eacute;n van de leerlingen, en
+het project om te beoordelen.<br />
+Het is ook mogelijk om een gespreksverslag op te slaan wanneer men een coachingsgesprek heeft met een student.
+</p>
