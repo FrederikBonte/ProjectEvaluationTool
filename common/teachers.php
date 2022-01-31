@@ -16,7 +16,6 @@ function print_edit_teachers_form()
 	$sql = "SELECT * FROM docent";	
 	debug_log($sql);
 	
-	$code = $_SESSION["docent"];
 	try {		
 		// Prepare a query...
 		$stmt = $database->prepare($sql);
@@ -58,7 +57,7 @@ function print_edit_teacher_tr_form($record)
 {
 ?>
 			<tr>
-			<form>
+			<form method="POST">
 				<td><?php print_hidden_input("code", $record["code"], true); ?></td>
 				<td><?php print_text_input("firstname", $record["voornaam"]); ?></td>
 				<td><?php print_text_input("lastname", $record["achternaam"]); ?></td>
@@ -74,7 +73,7 @@ function print_add_teacher_tr_form()
 {
 ?>
 			<tr>
-			<form>
+			<form method="POST">
 				<td><?php print_text_input("code"); ?></td>
 				<td><?php print_text_input("firstname"); ?></td>
 				<td><?php print_text_input("lastname"); ?></td>
@@ -304,4 +303,72 @@ function update_username_password($username, $password)
 		debug_error("Failed to change username and password because ", $ex);
 	}	
 }
+
+function assign_klas_to_teacher($klas_code, $teacher_code)
+{
+	global $database;
+	
+	$query  = "INSERT INTO docent_klas (docentcode, klascode) ";
+	$query .= "VALUES (:veld0, :veld1)";	
+	
+	debug_log($query);
+
+	$data = [
+		"veld0" => $teacher_code,
+		"veld1" => $klas_code
+	];
+	
+	try 
+	{
+		debug_log("About to add klas $klas_code to teacher $teacher_code.");
+		$stmt = $database->prepare($query);
+		if ($stmt->execute($data)) 
+		{
+			debug_log("Klas successfully added.");
+		} 
+		else 
+		{
+			debug_warning("Database refused to add klas.");
+		}
+	} 
+	catch (Exception $ex) 
+	{
+		debug_error("ERROR: Failed to add klas : ", $ex);
+	}	
+}
+
+function unassign_klas_from_teacher($klas_code, $teacher_code)
+{
+	global $database;
+	
+	$query  = "DELETE FROM docent_klas ";
+	$query .= "WHERE docentcode=:veld0 ";
+	$query .= "AND klascode=:veld1";	
+	
+	debug_log($query);
+
+	$data = [
+		"veld0" => $teacher_code,
+		"veld1" => $klas_code
+	];
+	
+	try 
+	{
+		debug_log("About to add klas $klas_code to teacher $teacher_code.");
+		$stmt = $database->prepare($query);
+		if ($stmt->execute($data)) 
+		{
+			debug_log("Klas successfully added.");
+		} 
+		else 
+		{
+			debug_warning("Database refused to add klas.");
+		}
+	} 
+	catch (Exception $ex) 
+	{
+		debug_error("ERROR: Failed to add klas : ", $ex);
+	}	
+}
+
 ?>

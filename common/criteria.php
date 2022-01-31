@@ -801,7 +801,6 @@ function remove_method($method_id)
 	}
 }
 
-
 function create_project_criterium($group_id, $name, $method_id, $weight, $autocalc)
 {
 	// Create a new criterium without a description... :(

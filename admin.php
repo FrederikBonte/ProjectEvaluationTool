@@ -1,5 +1,6 @@
 <?php
 require_once "common/teachers.php";
+require_once "common/locations.php";
 include "templates/header.txt";
 header('Content-type: text/html; charset=utf-8');
 
@@ -26,8 +27,28 @@ else if (array_key_exists("update_teacher", $_REQUEST))
 	$title = $_REQUEST["title"];
 	update_teacher($code, $firstname, $lastname, $title);
 }
+else if (array_key_exists("add_location", $_REQUEST))
+{
+	$code = $_REQUEST["code"];
+	$name = $_REQUEST["name"];
+	$description = $_REQUEST["description"];
+	add_location($code, $name, $description);
+}
+else if (array_key_exists("update_location", $_REQUEST))
+{
+	$code = $_REQUEST["code"];
+	$name = $_REQUEST["name"];
+	$description = $_REQUEST["description"];
+	update_location($code, $name, $description);
+}
+else if (array_key_exists("remove_location", $_REQUEST))
+{
+	$code = $_REQUEST["code"];
+	remove_location($code);
+}
 
 print_edit_teachers_form();
+print_edit_locations_form();
 ?>
 </body>
 </html>
