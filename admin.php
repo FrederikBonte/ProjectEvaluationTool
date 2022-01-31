@@ -43,8 +43,20 @@ else if (array_key_exists("update_location", $_REQUEST))
 }
 else if (array_key_exists("remove_location", $_REQUEST))
 {
-	$code = $_REQUEST["code"];
+	$code = $_REQUEST["code"];	
 	remove_location($code);
+}
+else if (array_key_exists("link_teacher", $_REQUEST))
+{
+	$location_code = $_REQUEST["code"];
+	$teacher_code = $_REQUEST["teacher_code"];
+	link_teacher_and_location($teacher_code, $location_code);
+}
+else if (array_key_exists("unlink_teacher", $_REQUEST))
+{
+	$location_code = $_REQUEST["code"];
+	$teacher_code = $_REQUEST["teacher_code"];
+	unlink_teacher_and_location($teacher_code, $location_code);
 }
 
 print_edit_teachers_form();

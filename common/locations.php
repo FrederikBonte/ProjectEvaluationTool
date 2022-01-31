@@ -7,12 +7,30 @@ require_once "common/form_gen.php";
 // Add/edit new locations.
 // Assign locations to teachers.
 
+function print_select_unlinked_teachers($code)
+{
+	$sqlcode = substr($code,0,5);
+	$query  = "SELECT docent.code as id, concat_ws(\" \", voornaam, achternaam) as value ";
+	$query .= "FROM docent ";
+	$query .= "WHERE docent.code NOT IN (SELECT docentcode FROM docent_locatie WHERE locatiecode='$sqlcode') ";
+	print_select($query, "teacher_code", "Kies een docent");
+}
+
+function print_select_linked_teachers($code)
+{
+	$sqlcode = substr($code,0,5);
+	$query  = "SELECT docent.code as id, concat_ws(\" \", voornaam, achternaam) as value ";
+	$query .= "FROM docent ";
+	$query .= "WHERE docent.code IN (SELECT docentcode FROM docent_locatie WHERE locatiecode='$sqlcode') ";
+	print_select($query, "teacher_code", "Kies een docent");
+}
+
 function print_edit_locations_form()
 {
 	global $database;
 	
 	// Read the record for this teacher.
-	$sql  = "SELECT locatie.*, ((MIN(docentcode) IS NOT NULL) OR (MIN(nummer) IS NOT NULL)) as gebruikt ";
+	$sql  = "SELECT locatie.*, COUNT(DISTINCT docent_locatie.docentcode) AS aantal, ((MIN(docentcode) IS NOT NULL) OR (MIN(nummer) IS NOT NULL)) as gebruikt ";
 	$sql .= "FROM locatie ";	
 	$sql .= "LEFT JOIN docent_locatie ON docent_locatie.locatiecode=code ";	
 	$sql .= "LEFT JOIN leerling ON leerling.locatiecode=code ";	
@@ -32,6 +50,7 @@ function print_edit_locations_form()
 				<th>Code</th>			
 				<th>Naam</th>
 				<th>Omschrijving</th>
+				<th>Docenten</th>
 				<th>Actie</th>
 			</tr>
 <?php
@@ -57,18 +76,32 @@ function print_edit_locations_form()
 
 function print_edit_location_tr_form($record)
 {
+	$code = $record["code"];
 ?>
 			<tr>
 			<form method="POST">
-				<td><?php print_hidden_input("code", $record["code"], true); ?></td>
+				<td><?php print_hidden_input("code", $code, true); ?></td>
 				<td><?php print_text_input("name", $record["naam"]); ?></td>
 				<td><?php print_text_input("description", $record["omschrijving"]); ?></td>
+				<td><?=$record["aantal"]?></td>
 				<td>
 <?php 
 	print_submit_button("update_location", "<span class=\"fa fa-pencil\"></span>");
 	if ($record["gebruikt"]==0) {
 		print_submit_button("remove_location", "<span class=\"fa fa-trash\"></span>");
 	}	
+?>
+				</td>
+				<td>
+<?php 
+	print_select_unlinked_teachers($code); 
+	print_submit_button("link_teacher", "<span class=\"fa fa-chain\"></span>");
+?>
+				</td>
+				<td>
+<?php 
+	print_select_linked_teachers($code); 
+	print_submit_button("unlink_teacher", "<span class=\"fa fa-chain-broken\"></span>");
 ?>
 				</td>
 			</form>
@@ -84,6 +117,7 @@ function print_add_location_tr_form()
 				<td><?php print_text_input("code"); ?></td>
 				<td><?php print_text_input("name"); ?></td>
 				<td><?php print_text_input("description"); ?></td>
+				<td>0</td>
 				<td><?php print_submit_button("add_location", "<span class=\"fa fa-plus\"></span>");?></td>
 			</form>
 			</tr>
@@ -163,7 +197,7 @@ function link_teacher_and_location($teacher_code, $location_code)
 {
 	global $database;
 	
-	$query  = "INSERT INTO docent_location (docentcode, locatiecode) ";
+	$query  = "INSERT INTO docent_locatie (docentcode, locatiecode) ";
 	$query .= "VALUES (:veld0, :veld1)";	
 	
 	debug_log($query);
@@ -179,16 +213,16 @@ function link_teacher_and_location($teacher_code, $location_code)
 		$stmt = $database->prepare($query);
 		if ($stmt->execute($data)) 
 		{
-			debug_log("Location successfully added.");
+			debug_log("Location successfully linked.");
 		} 
 		else 
 		{
-			debug_warning("Database refused to add location.");
+			debug_warning("Database refused to link location.");
 		}
 	} 
 	catch (Exception $ex) 
 	{
-		debug_error("ERROR: Failed to add location : ", $ex);
+		debug_error("ERROR: Failed to link location : ", $ex);
 	}	
 }
 

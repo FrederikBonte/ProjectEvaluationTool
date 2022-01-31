@@ -43,15 +43,16 @@ include "templates/header.txt";
 	//   Allow teachers to choose a new username. DONE
 	//   Link Teachers to classes to make selecting students easier. DONE
 	// * Admin page to easily add new teachers.
-	// @TODO:
-	// * Handle template projects (cannot be used to reward points, only as copy source.)
-	// * Import students through xml.
-	// * Manage the list of teachers.
-	//   Implement a role system that limits change rights.
 	// * Link Teachers to locations to that not everybody sees all students.
 	//	 Create a location table (ID, name, address, etc.)
 	//   Link teachers, students and classes to locations. (projects can be shared.)
 	//   Only show students and classes to which the currently logged-in teacher is connected.
+	// @TODO:
+	// * Create admin form to link teachers and locations.
+	// * Handle template projects (cannot be used to reward points, only as copy source.)
+	// * Import students through xml.
+	// * Manage the list of teachers.
+	//   Implement a role system that limits change rights.
 	// * Allow subgroups of criteria
 	//    For instance two sub groups, and the main group calculates the average of those.
 	//    Multiple rewards, only the highest is taken into account.
