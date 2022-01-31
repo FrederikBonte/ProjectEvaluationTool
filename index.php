@@ -56,7 +56,7 @@ include "templates/header.txt";
 	//    For instance two sub groups, and the main group calculates the average of those.
 	//    Multiple rewards, only the highest is taken into account.
     //    Implement all the possible group calculations: sum, min, max, average and for now... Other...
-	//
+	// * Nieuwe totaal bereken methode... Gewogen gewicht als maximale score meenemen.
 	//
 	// Additionally: 
 	// More icons: https://fontawesome.com/v4.7/icons/

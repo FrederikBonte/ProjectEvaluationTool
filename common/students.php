@@ -5,7 +5,10 @@ require_once "common/form_gen.php";
 
 function print_select_klas($selected_id = null, $label = null) 
 {
-	$query = "SELECT code as id, omschrijving as value FROM klas WHERE actief=1 ORDER BY jaar";	
+	$code = substr($_SESSION["docent"],0,5);
+	$query = "SELECT code as id, omschrijving as value FROM klas WHERE actief=1 ".
+	         "AND locatiecode IN (SELECT locatiecode FROM docent_locatie WHERE docentcode='$code') ".
+			 "ORDER BY jaar";	
 	print_select($query, "klas", "Kies een klas", $selected_id, $label);
 }
 
@@ -21,18 +24,32 @@ function print_select_unassigned_klas($teacher, $label = null)
 	global $database;
 	$sqlteach = substr($teacher, 0, 5);
 	$query  = "SELECT code as id, omschrijving as value FROM klas ";
-	$query .= "WHERE actief=1 AND code NOT IN (SELECT klascode FROM docent_klas WHERE docentcode='$sqlteach') ";
+	$query .= "WHERE actief=1 ";
+	$query .= "AND code NOT IN (SELECT klascode FROM docent_klas WHERE docentcode='$sqlteach') ";
+	$query .= "AND locatiecode IN (SELECT locatiecode FROM docent_locatie WHERE docentcode='$sqlteach') ";
 	$query .= "ORDER BY jaar ";	
 	print_select($query, "klas", "Kies een bestaande klas", null, $label);
 }
 
 function print_select_student($klas_id = null, $selected_id = null, $label = null) 
 {
+	$code = substr($_SESSION["docent"],0,5);
 	$query = "SELECT nummer as id, concat_ws(\" \", voornaam, tussenvoegsel, achternaam) as value ".
-			 "FROM leerling ".
-			 (($klas_id==null)?"":"WHERE klas='$klas_id' ").
+			 "FROM leerling WHERE actief=1 ".
+	         "AND locatiecode IN (SELECT locatiecode FROM docent_locatie WHERE docentcode='$code') ".
+			 (($klas_id==null)?"":"AND klas='$klas_id' ").
 			 "ORDER BY achternaam, voornaam";	
 	print_select($query, "student", "Kies een leerling", $selected_id, $label);
+}
+
+function print_select_location($selected_id = null, $label = null)
+{
+	$code = substr($_SESSION["docent"],0,5);
+	$query  = "SELECT code as id, naam as value ";
+	$query .= "FROM locatie ";
+	$query .= "WHERE code IN (SELECT locatiecode FROM docent_locatie WHERE docentcode='$code') ";
+	$query .= "ORDER BY naam";
+	print_select($query, "location", "Kies een locatie", $selected_id, $label);
 }
 
 function print_add_klas_form()
@@ -52,6 +69,8 @@ function print_add_klas_form()
 	echo "<br />";
 	print_number_input("semester", 1,8,null, "Semester : ");
 	echo "<br />";
+	print_select_location(null, "Locatie : ");
+	echo "<br />";
 	print_submit_button("add_klas", "Toevoegen");
 ?>		
 	</form>
@@ -67,6 +86,7 @@ function print_add_klas_tr_form()
 	<td><?php print_text_input("description"); ?></td>
 	<td><?php print_number_input("year", 2022, 2040, 2022); ?></td>
 	<td><?php print_number_input("semester", 1,8, 1); ?></td>
+	<td><?php print_select_location(); ?></td>
 	<td></td>
 	<td><?php print_submit_button("add_klas", "<span class=\"fa fa-plus\"></span>"); ?></td>
 	</form>
@@ -83,6 +103,7 @@ function print_edit_klas_tr_form($record)
 	<td><?php print_text_input("description", $record["omschrijving"]); ?></td>
 	<td><?php print_number_input("year", 2018, 2040, $record["jaar"]); ?></td>
 	<td><?php print_number_input("semester", 1,8, $record["semester"]); ?></td>
+	<td><?php print_select_location($record["locatiecode"]); ?></td>
 	<td><?php print_checkbox("active", $record["actief"]); ?></td>
 	<td><?php print_submit_button("update_klas", "<span class=\"fa fa-pencil\"></span>"); ?></td>
 	<td><?php print_submit_button("unassign_klas", "<span class=\"fa fa-chain-broken\"></span>"); ?></td>
@@ -110,6 +131,7 @@ function print_edit_docent_klas_form($teacher)
 				<th>Omschrijving</th>
 				<th>Jaar</th>
 				<th>Semester</th>
+				<th>Locatie</th>
 				<th>Actief</th>
 				<th>Actie</th>
 			</tr>
@@ -141,11 +163,13 @@ function print_edit_docent_klas_form($teacher)
 function print_edit_students($klas_id = null)
 {
 	global $database;
+	$code = substr($_SESSION["docent"],0,5);
 	$query = "SELECT leerling.*, ((MAX(beoordeling.datum) IS NOT NULL) OR (MAX(evaluatie.datum) IS NOT NULL)) as beoordeeld ".
 			"FROM leerling ".
 			"LEFT JOIN beoordeling ON beoordeling.leerlingnummer = leerling.nummer ".
 			"LEFT JOIN evaluatie ON evaluatie.leerlingnummer = leerling.nummer ".
-			(($klas_id==null)?"":"WHERE klas='$klas_id' ").
+			"WHERE locatiecode in (SELECT locatiecode FROM docent_locatie WHERE docentcode='$code') ".
+			(($klas_id==null)?"":"AND klas='$klas_id' ").
 			"GROUP BY leerling.nummer, leerling.voornaam, leerling.tussenvoegsel, leerling.achternaam, leerling.klas, leerling.actief ".
 			"ORDER BY achternaam, voornaam";
 	debug_log($query);
@@ -163,6 +187,7 @@ function print_edit_students($klas_id = null)
 				<th>Tussenvoegsel</th>
 				<th>Achternaam</th>
 				<th>Klas</th>
+				<th>Locatie</th>
 				<th>Actief</th>
 				<th>Actie</th>
 			</tr>
@@ -190,11 +215,13 @@ function print_edit_students($klas_id = null)
 function print_list_students($klas_id = null)
 {
 	global $database;
+	$code = substr($_SESSION["docent"],0,5);
 	$query = "SELECT leerling.*, ((MAX(beoordeling.datum) IS NOT NULL) OR (MAX(evaluatie.datum) IS NOT NULL)) as beoordeeld ".
 			"FROM leerling ".
 			"LEFT JOIN beoordeling ON beoordeling.leerlingnummer = leerling.nummer ".
 			"LEFT JOIN evaluatie ON evaluatie.leerlingnummer = leerling.nummer ".
-			(($klas_id==null)?"":"WHERE klas='$klas_id' ").
+			"WHERE locatiecode in (SELECT locatiecode FROM docent_locatie WHERE docentcode='$code') ".
+			(($klas_id==null)?"":"AND klas='$klas_id' ").
 			"GROUP BY leerling.nummer, leerling.voornaam, leerling.tussenvoegsel, leerling.achternaam, leerling.klas, leerling.actief ".
 			"ORDER BY achternaam, voornaam";
 	debug_log($query);
@@ -212,6 +239,7 @@ function print_list_students($klas_id = null)
 				<th>Tussenvoegsel</th>
 				<th>Achternaam</th>
 				<th>Klas</th>
+				<th>Locatie</th>
 				<th>Actief</th>
 			</tr>
 <?php
@@ -223,6 +251,7 @@ function print_list_students($klas_id = null)
 				<td><?=$record["tussenvoegsel"]?></td>
 				<td><?=$record["achternaam"]?></td>
 				<td><?=$record["klas"]?></td>
+				<td><?=$record["locatiecode"]?></td>
 				<td>&nbsp;<?=($record["actief"]==1)?"ja":"<i>nee</i>"?></td>
 			</tr>
 <?php
@@ -252,6 +281,7 @@ function print_edit_student_tr_form($record)
 				<td><?php print_text_input("middlename", $record["tussenvoegsel"]); ?></td>
 				<td><?php print_text_input("lastname", $record["achternaam"]); ?></td>
 				<td><?php print_select_klas($record["klas"]); ?></td>
+				<td><?php print_select_location($record["locatiecode"]); ?></td>
 				<td><?php print_checkbox("actief", $record["actief"]); ?></td>
 				<td>
 <?php
@@ -278,6 +308,7 @@ function print_add_student_tr_form($klas)
 				<td><?php print_text_input("middlename"); ?></td>
 				<td><?php print_text_input("lastname"); ?></td>
 				<td><?php print_hidden_input("klas", $klas, true); ?></td>
+				<td><?php print_select_location(); ?></td>
 				<td></td>
 				<td><?php print_submit_button("add_student", "<span class=\"fa fa-plus\"></span>");?></td>
 			</form>
@@ -504,12 +535,12 @@ function student_exists($number)
 	}	
 }
 
-function add_student($number, $firstname, $middle, $lastname, $klas)
+function add_student($number, $firstname, $middle, $lastname, $klas, $location)
 {
 	global $database;
 	
-	$query  = "INSERT INTO leerling (nummer, voornaam, tussenvoegsel, achternaam, klas) ";
-	$query .= "VALUES (:veld0, :veld1, :veld2a, :veld2b, :veld3)";	
+	$query  = "INSERT INTO leerling (nummer, voornaam, tussenvoegsel, achternaam, klas, locatiecode) ";
+	$query .= "VALUES (:veld0, :veld1, :veld2a, :veld2b, :veld3, :veld4)";	
 	
 	debug_log($query);
 
@@ -518,7 +549,8 @@ function add_student($number, $firstname, $middle, $lastname, $klas)
 		"veld1" => $firstname,
 		"veld2a" => $middle,
 		"veld2b" => $lastname,
-		"veld3" => $klas
+		"veld3" => $klas,
+		"veld4" => $location
 	];
 	
 	try 
@@ -540,7 +572,7 @@ function add_student($number, $firstname, $middle, $lastname, $klas)
 	}
 }
 
-function update_student($number, $firstname, $middle, $lastname, $klas, $active = 1)
+function update_student($number, $firstname, $middle, $lastname, $klas, $location, $active = 1)
 {
 	global $database;
 	
@@ -549,7 +581,8 @@ function update_student($number, $firstname, $middle, $lastname, $klas, $active 
 	$query .= "    tussenvoegsel = :veld2a, ";
 	$query .= "    achternaam = :veld2b, ";
 	$query .= "    klas = :veld3, ";
-	$query .= "    actief = :veld4 ";
+	$query .= "    locatiecode = :veld4, ";
+	$query .= "    actief = :veld5 ";
 	$query .= "WHERE nummer = :veld0";
 		
 	debug_log($query);
@@ -560,7 +593,8 @@ function update_student($number, $firstname, $middle, $lastname, $klas, $active 
 		"veld2a" => $middle,
 		"veld2b" => $lastname,
 		"veld3" => $klas,
-		"veld4" => $active
+		"veld4" => $location,
+		"veld5" => $active
 	];
 	
 	try {
@@ -579,12 +613,12 @@ function update_student($number, $firstname, $middle, $lastname, $klas, $active 
 	}
 }
 
-function add_klas($code, $description, $year, $semester)
+function add_klas($code, $description, $year, $semester, $location)
 {
 	global $database;
 	
-	$query  = "INSERT INTO klas (code, omschrijving, jaar, semester) ";
-	$query .= "VALUES (:veld0, :veld1, :veld2, :veld3)";	
+	$query  = "INSERT INTO klas (code, omschrijving, jaar, semester, locatiecode) ";
+	$query .= "VALUES (:veld0, :veld1, :veld2, :veld3, :veld4)";	
 	
 	debug_log($query);
 
@@ -592,7 +626,8 @@ function add_klas($code, $description, $year, $semester)
 		"veld0" => $code,
 		"veld1" => $description,
 		"veld2" => $year,
-		"veld3" => $semester
+		"veld3" => $semester,
+		"veld4" => $location
 	];
 	
 	try 
@@ -682,11 +717,11 @@ function unassign_klas_from_teacher($klas_code, $teacher_code)
 	}	
 }
 
-function update_klas($code, $description, $year, $semester, $active)
+function update_klas($code, $description, $year, $semester, $location, $active)
 {
 	global $database;
 	
-	$query  = "UPDATE klas SET omschrijving=:veld1, jaar=:veld2, semester=:veld3, actief=:veld4 ";
+	$query  = "UPDATE klas SET omschrijving=:veld1, jaar=:veld2, semester=:veld3, locatiecode=:veld4, actief=:veld5 ";
 	$query .= "WHERE code=:veld0";	
 	
 	debug_log($query);
@@ -696,7 +731,8 @@ function update_klas($code, $description, $year, $semester, $active)
 		"veld1" => $description,
 		"veld2" => $year,
 		"veld3" => $semester,
-		"veld4" => $active
+		"veld4" => $location,
+		"veld5" => $active
 	];
 	
 	try 

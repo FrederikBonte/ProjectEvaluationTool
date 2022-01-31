@@ -16,7 +16,8 @@ if (array_key_exists("add_student", $_REQUEST))
 	}
 	$lastname = $_REQUEST["lastname"];
 	$klas = $_REQUEST["klas"];
-	add_student($id, $firstname, $middlename, $lastname, $klas);	
+	$location = $_REQUEST["location"];
+	add_student($id, $firstname, $middlename, $lastname, $klas, $location);	
 }
 else if (array_key_exists("update_student", $_REQUEST))
 {
@@ -35,8 +36,9 @@ else if (array_key_exists("update_student", $_REQUEST))
 		}
 		$lastname = $_REQUEST["lastname"];
 		$klas = $_REQUEST["klas"];
+		$location = $_REQUEST["location"];
 		$active = array_key_exists("actief", $_REQUEST)?1:0;
-		update_student($id, $firstname, $middlename, $lastname, $klas, $active);
+		update_student($id, $firstname, $middlename, $lastname, $klas, $location, $active);
 	}
 }
 else if (array_key_exists("import", $_REQUEST))
@@ -60,7 +62,8 @@ else if (array_key_exists("add_klas", $_REQUEST))
 	$description = $_REQUEST["description"];
 	$year = $_REQUEST["year"];
 	$semester = $_REQUEST["semester"];
-	add_klas($code, $description, $year, $semester);
+	$location = $_REQUEST["location"];
+	add_klas($code, $description, $year, $semester, $location);
 }
 	
 //print_select_klas();
