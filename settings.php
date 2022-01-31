@@ -1,5 +1,6 @@
 <?php
 require_once "common/teachers.php";
+require_once "common/students.php";
 include "templates/header.txt";
 
 if (array_key_exists("change_passwd", $_REQUEST))
