@@ -4,10 +4,41 @@ require_once "common/projects.php";
 require_once "common/evaluate.php";
 include "templates/header_stars.txt";
 ?>
-	<script type="text/javascript" src="js/load_klas.js"></script>
+	<script type="text/javascript" src="js/load_klas.js"></script>	
 <?php
 	
-if (array_key_exists("evaluate_project", $_REQUEST))
+if (array_key_exists("id", $_REQUEST)) {
+	$project_id = $_REQUEST["id"];
+	if (array_key_exists("example", $_REQUEST))
+	{
+?>
+		<h2>Voorbeeld beoordelingsformulier</h2>
+<?php		
+		print_project_evaluation_form($project_id);
+	}
+}
+else if (array_key_exists("start_evaluate", $_REQUEST))
+{
+	if (array_key_exists("student", $_REQUEST) && array_key_exists("project", $_REQUEST))
+	{
+?>
+	<h2>Start project evaluatie voor een student</h2>		
+	<script type="text/javascript" src="js/update_score.js"></script>	
+<?php
+//		debug_dump($_REQUEST);
+		$student_id = $_REQUEST["student"];
+		$project_id = $_REQUEST["project"];
+		// @TODO: CHECK legal student and project.
+		print_project_evaluation_form($project_id, $student_id);
+	}
+	else
+	{
+?>
+	<h2>Selecteer een project en een student om te evalueren</h2>
+<?php
+	}
+}
+else if (array_key_exists("evaluate_project", $_REQUEST))
 {	
 	$rand1 = $_REQUEST["randcheck"];
 	$rand2 = array_key_exists("rand", $_SESSION)?$_SESSION["rand"]:-1;
@@ -24,36 +55,6 @@ if (array_key_exists("evaluate_project", $_REQUEST))
 	else
 	{
 		debug_warning("Resubmit detected and avoided.");
-	}
-}
-else if (array_key_exists("id", $_REQUEST)) {
-	$project_id = $_REQUEST["id"];
-	if (array_key_exists("example", $_REQUEST))
-	{
-?>
-		<h2>Voorbeeld beoordelingsformulier</h2>
-<?php		
-		print_project_evaluation_form($project_id);
-	}
-}
-else if (array_key_exists("start_evaluate", $_REQUEST))
-{
-	if (array_key_exists("student", $_REQUEST) && array_key_exists("project", $_REQUEST))
-	{
-?>
-	<h2>Start project evaluatie voor een student</h2>		
-<?php
-//		debug_dump($_REQUEST);
-		$student_id = $_REQUEST["student"];
-		$project_id = $_REQUEST["project"];
-		// @TODO: CHECK legal student and project.
-		print_project_evaluation_form($project_id, $student_id);
-	}
-	else
-	{
-?>
-	<h2>Selecteer een project en een student om te evalueren</h2>
-<?php
 	}
 }
 else if (array_key_exists("start_coach", $_REQUEST))

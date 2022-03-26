@@ -45,9 +45,9 @@ function print_password_input($name, $value = null, $label = null, $id=null, $ja
 onchange="<?=$javascript?>" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();" /><?php
 }
 
-function print_hidden_input($name, $value, $show = false, $id = null)
+function print_hidden_input($name, $value, $show = false, $id = null, $javascript=null)
 {
-?><input type="hidden" id="<?=$id?>" name="<?=$name?>" value="<?=$value?>" /><?php
+?><input type="hidden" id="<?=$id?>" name="<?=$name?>" value="<?=$value?>" onchange="<?=$javascript?>" /><?php
 	if ($show)
 	{
 		echo $value;
@@ -59,11 +59,11 @@ function print_hidden_time($name)
 ?><input type="hidden" name="<?=$name?>" id="<?=$name?>" value="0" /><?php
 }
 
-function print_number_input($name, $min, $max, $value = null, $label = null)
+function print_number_input($name, $min, $max, $value = null, $label = null, $javascript=null )
 {
 	// When the value is null, don't actually add a value="" to the field.
 	$value_disp = $value?" value=\"$value\" ":"";
-?><?=$label?><input type="number" name="<?=$name?>" class="num_<?=$name?>" min="<?=$min?>" max="<?=$max?>" <?=$value_disp?> /><?php
+?><?=$label?><input type="number" name="<?=$name?>" class="num_<?=$name?>" min="<?=$min?>" max="<?=$max?>" <?=$value_disp?> onchange="<?=$javascript?>" /><?php
 }
 
 function print_submit_button($name, $value, $id = null)

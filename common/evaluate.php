@@ -162,13 +162,21 @@ function print_project_evaluation_criteria($project_id, $student_number)
 				<th>Beoordeling</th>
 			</tr>
 <?php
-
+			$total = 0;
 			foreach ($stmt as $record) 	{
+				if ($record["autocalc"]==1)
+				{
+					$total += $record["max"];
+				}
 ?>
 			<tr>
 				<td><?=$record["crit_naam"]?></td>
 				<td><?=$record["crit_omschrijving"]?></td>
-				<td><?php debug_log($record["methode_naam"]); print_evaluate_method($record["criteriumid"], $record["methodeid"], $record["methode_min"], $record["methode_max"]) ?></td>
+				<td><?php 
+				debug_log($record["methode_naam"]); 
+				print_evaluate_method($record["criteriumid"], $record["methodeid"], $record["methode_min"], $record["methode_max"]);
+				print_hidden_input("weight[".$record["criteriumid"]."]", $record["gewicht"]);
+				?></td>
 			</tr>
 <?php				
 			}
@@ -179,6 +187,7 @@ function print_project_evaluation_criteria($project_id, $student_number)
 			<tr><td>Opslaan</td><td></td><td><?php print_submit_button("evaluate_project", "Opslaan"); ?></td></tr>
 			</table>
 			</form>
+			<p>Score : <span id="actual_points">0</span> van <span id="max_points"><?=$total?></span> ==> <span id="score">0</span></p>
 <?php
 		} 
 		else 
@@ -215,14 +224,14 @@ function print_evaluate_method($crit_id, $method_id, $min, $max)
 	}
 	else 
 	{
-		print_number_input("criterium[$crit_id]", $min, $max);
+		print_number_input("criterium[$crit_id]", $min, $max, null, null, "update_score()");
 	}
 }
 
 function print_evaluate_yes_no($crit_id)
 {
 ?>
-	<select name="criterium[<?=$crit_id?>]">
+	<select name="criterium[<?=$crit_id?>]" onchange="update_score()">
 		<option value="-1" selected disabled>Nee/Ja</option>
 		<option value="0">Nee</option>
 		<option value="1">Ja</option>
@@ -233,7 +242,7 @@ function print_evaluate_yes_no($crit_id)
 function print_evaluate_NMJ($crit_id)
 {
 ?>
-	<select name="criterium[<?=$crit_id?>]">
+	<select name="criterium[<?=$crit_id?>]" onchange="update_score()">
 		<option value="-1" selected disabled>Nee/Matig/Ja</option>
 		<option value="0">Nee</option>
 		<option value="1">Matig</option>
@@ -245,12 +254,12 @@ function print_evaluate_NMJ($crit_id)
 function print_evaluate_IVG($crit_id)
 {
 ?>
-	<select name="criterium[<?=$crit_id?>]">
+	<select name="criterium[<?=$crit_id?>]" onchange="update_score()">
 		<option value="-1" selected disabled>Incompleet/Goed</option>
 		<option value="0">Nee</option>
 		<option value="1">Incompleet</option>
 		<option value="2">Voldoende</option>
-		<option value="2">Goed</option>
+		<option value="3">Goed</option>
 	</select>
 <?php
 }
