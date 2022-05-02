@@ -102,5 +102,7 @@ else
 	print_select_klas_form();
 }	
 ?>
+	<div id="recent_students">
+	</div>
 </body>
 </html>
