@@ -107,4 +107,26 @@ input.num_student_id {
 	width: 100px;
 }
 
+table.evaluation
+{
+	width: 1000px;
+	border: black 1px;
+}
+
+table.evaluation tr td {
+	text-align: left;
+	padding: 5px;
+	vertical-align: top;
+}
+
+table.evaluation tr:nth-child(even)
+{
+	background-color: #112;
+}
+
+table.evaluation tr:nth-child(odd)
+{
+	background-color: #223;
+}
+
 
