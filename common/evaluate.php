@@ -59,7 +59,6 @@ function print_coach_student_form($student_id)
 	print_hidden_time("seconds");
 	print_hidden_input("student", $student_id);
 	print_hidden_time("tijd");
-	// @TODO: Print start second since 1970? or something...
 ?>		
 	<textarea name="conversation" cols="50" rows="4" placeholder="Type hier uw evaluatie tekst. Wat gaat er goed? Waar heb je hulp bij nodig? Is gelukt wat je vorige week hebt beloofd?"></textarea><br />
 <?php
@@ -96,6 +95,51 @@ function print_student_form_header($student_id)
 	} catch (Exception $ex) {
 		debug_error("ERROR: Failed to load student : ", $ex);
 	}	
+}
+
+function print_student_evaluations($student_number)
+{
+	global $database;
+	$sql = "SELECT * FROM projecten.evaluatie WHERE leerlingnummer = :id ORDER BY datum DESC";
+	print "<!-- $sql -->\n";
+	$data = [
+		"id" => $student_number
+	];
+	
+	try {
+		$stmt = $database->prepare($sql);
+		if ($stmt->execute($data)) 
+		{
+?>
+			<table class="evaluation">
+			<tr>
+				<th>Docent</th>
+				<th>Datum</th>
+				<th>Tijd</th>
+				<th>Evaluatie</th>
+			</tr>
+<?php
+			foreach ($stmt as $record) 	{
+?>
+			<tr>
+				<td><?=$record["docentcode"]?></td>
+				<td><?=$record["datum"]?></td>
+				<td><?=$record["tijd"]?></td>
+				<td><?=$record["notitie"]?></td>
+			</tr>
+<?php				
+			}
+?>
+			</table>
+<?php
+		} 
+		else 
+		{
+			debug_warning("Database refused to read evaluation information.");
+		}
+	} catch (Exception $ex) {
+		debug_error("ERROR: Failed to load student evaluations : ", $ex);
+	}
 }
 
 function print_project_evaluation_form($project_id, $student_number = null)

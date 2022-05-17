@@ -64,6 +64,7 @@ else if (array_key_exists("start_coach", $_REQUEST))
 		$student_id = $_REQUEST["student"];
 	//	debug_dump($_REQUEST);
 		print_coach_student_form($student_id);
+		print_student_evaluations($student_id);
 	}
 	else
 	{
@@ -102,5 +103,7 @@ else
 	print_select_klas_form();
 }	
 ?>
+	<div id="recent_students">
+	</div>
 </body>
 </html>

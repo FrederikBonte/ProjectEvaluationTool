@@ -1,13 +1,19 @@
 function load_klas(klas_code) 
 {
 	xhttp = new XMLHttpRequest();
-	xhttp.onload = process;
+	xhttp.onload = processStudents;
 	// Create your own get request.
 	xhttp.open("GET", "export_students.php?klas=" + klas_code + "&json");
 	xhttp.send();
+	
+	xhttp = new XMLHttpRequest();
+	xhttp.onload = processEvaluations;
+	// Create your own get request.
+	xhttp.open("GET", "common/list_evaluations.php?klas=" + klas_code);
+	xhttp.send();
 }
 
-function process()
+function processStudents()
 {
 	var mytable = document.getElementById("students");
 	// Interpret the json result.
@@ -50,4 +56,12 @@ function addStudent(options, student)
 		
 	new_option = $("<option value=\""+ student.nummer +"\">"+name+"</option>");
 	options.after(new_option);	
+}
+
+function processEvaluations()
+{
+	// Retrieve the required element...
+	var div_recent = document.getElementById("recent_students");
+	// Replace the content of the div with the table...
+	div_recent.innerHTML = this.responseText;
 }
